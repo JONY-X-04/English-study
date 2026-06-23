@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="每日单词">
+  <title>每日单词</title>
+  <!--
+    为保证单文件可离线运行，这里内嵌了页面实际用到的 Tailwind 风格工具样式，
+    不依赖 CDN。若以后使用 Tailwind CLI，可直接按现有 class 名重新构建 CSS。
+  -->
+  <style>
+    *,::before,::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}body,h1,h2,h3,p{margin:0}button,input{font:inherit}button{cursor:pointer}body{min-height:100vh;background:#f8fafc;color:#0f172a}.hidden{display:none!important}.flex{display:flex}.grid{display:grid}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.w-full{width:100%}.min-w-0{min-width:0}.flex-1{flex:1}.shrink-0{flex-shrink:0}.text-center{text-align:center}.text-left{text-align:left}.font-bold{font-weight:700}.font-semibold{font-weight:600}.text-xs{font-size:.75rem;line-height:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-slate-400{color:#94a3b8}.text-slate-500{color:#64748b}.text-slate-600{color:#475569}.text-slate-700{color:#334155}.text-white{color:#fff}.text-emerald-600{color:#059669}.text-rose-600{color:#e11d48}.bg-white{background:#fff}.bg-slate-100{background:#f1f5f9}.bg-slate-900{background:#0f172a}.bg-emerald-500{background:#10b981}.bg-rose-500{background:#f43f5e}.border{border:1px solid #e2e8f0}.border-b{border-bottom:1px solid #e2e8f0}.rounded-xl{border-radius:.75rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.shadow-sm{box-shadow:0 1px 2px rgb(15 23 42/.06)}.shadow-lg{box-shadow:0 12px 28px rgb(15 23 42/.09)}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.mt-5{margin-top:1.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.space-y-2>*+*{margin-top:.5rem}.space-y-3>*+*{margin-top:.75rem}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.break-all{word-break:break-all}.opacity-60{opacity:.6}.max-w-md{max-width:28rem}.mx-auto{margin-left:auto;margin-right:auto}.sticky{position:sticky}.top-0{top:0}.z-10{z-index:10}
+    .app{min-height:100vh;padding-bottom:calc(6rem + env(safe-area-inset-bottom))}.header{padding-top:calc(1rem + env(safe-area-inset-top));backdrop-filter:blur(12px);background:rgb(248 250 252/.9)}.view{padding:1rem}.card{background:#fff;border:1px solid #e2e8f0;border-radius:1rem;box-shadow:0 1px 2px rgb(15 23 42/.06)}.word-card{min-height:19rem;padding:2rem 1.25rem;display:flex;flex-direction:column;align-items:center;justify-content:center;user-select:none;-webkit-tap-highlight-color:transparent}.btn{border:0;border-radius:.75rem;padding:.85rem 1rem;font-weight:700;transition:transform .12s,opacity .12s}.btn:active{transform:scale(.97)}.btn:disabled{opacity:.45;cursor:not-allowed}.btn-outline{background:#fff;border:1px solid #cbd5e1;color:#334155}.input{width:100%;border:1px solid #cbd5e1;border-radius:.75rem;padding:.75rem;background:#fff;color:#0f172a;outline:none}.input:focus{border-color:#64748b;box-shadow:0 0 0 3px rgb(148 163 184/.2)}.nav{position:fixed;left:0;right:0;bottom:0;background:rgb(255 255 255/.96);border-top:1px solid #e2e8f0;padding:.5rem .75rem calc(.5rem + env(safe-area-inset-bottom));z-index:20}.nav-inner{max-width:28rem;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}.nav-btn{border:0;background:transparent;padding:.55rem .25rem;border-radius:.75rem;color:#64748b;font-size:.75rem}.nav-btn.active{background:#f1f5f9;color:#0f172a;font-weight:700}.pill{display:inline-flex;align-items:center;border-radius:9999px;padding:.25rem .6rem;background:#f1f5f9;color:#475569;font-size:.75rem}.progress{height:.45rem;background:#e2e8f0;border-radius:9999px;overflow:hidden}.progress>div{height:100%;background:#0f172a;border-radius:9999px;transition:width .25s}.list-row{display:flex;gap:.75rem;align-items:center;padding:.9rem 0;border-bottom:1px solid #f1f5f9}.list-row:last-child{border-bottom:0}.icon-btn{border:0;background:#f1f5f9;border-radius:.65rem;padding:.45rem .65rem;color:#475569}.empty{padding:3rem 1rem;text-align:center;color:#64748b}.toast{position:fixed;left:50%;bottom:calc(5.5rem + env(safe-area-inset-bottom));transform:translateX(-50%);background:#0f172a;color:#fff;border-radius:9999px;padding:.65rem 1rem;font-size:.875rem;z-index:50;box-shadow:0 8px 24px rgb(15 23 42/.2);white-space:nowrap}.modal{position:fixed;inset:0;background:rgb(15 23 42/.45);z-index:40;display:flex;align-items:flex-end;justify-content:center}.modal-panel{width:100%;max-width:28rem;background:#fff;border-radius:1.25rem 1.25rem 0 0;padding:1.25rem;padding-bottom:calc(1.25rem + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}.stat-grid{grid-template-columns:repeat(3,1fr)}.danger{color:#e11d48}.answer{max-width:22rem;white-space:pre-wrap}.tap-hint{min-height:1.25rem}.mode-switch{display:grid;grid-template-columns:repeat(3,1fr);background:#e2e8f0;border-radius:.8rem;padding:.2rem}.mode-btn{border:0;background:transparent;color:#64748b;border-radius:.65rem;padding:.6rem .2rem;font-size:.76rem;font-weight:600}.mode-btn.active{background:#fff;color:#0f172a;box-shadow:0 1px 3px rgb(15 23 42/.12)}.unit-stat{padding:.8rem 0;border-bottom:1px solid #f1f5f9}.unit-stat:last-child{border-bottom:0}@media(min-width:640px){.modal{align-items:center}.modal-panel{border-radius:1.25rem}.app{padding-bottom:6rem}}
+  </style>
+</head>
+<body>
+  <div class="app max-w-md mx-auto">
+    <header class="header sticky top-0 z-10 border-b">
+      <div class="px-4 py-3 flex items-center justify-between">
+        <div><h1 class="text-lg font-bold">每日单词</h1><p id="todayLabel" class="text-xs text-slate-500"></p></div>
+        <span id="dueBadge" class="pill">待复习 0</span>
+      </div>
+    </header>
+
+    <main>
+      <section id="studyView" class="view">
+        <div class="card p-3 mb-4">
+          <div class="mode-switch">
+            <button class="mode-btn active" data-mode="new">今日需背</button>
+            <button class="mode-btn" data-mode="today">今日复习</button>
+            <button class="mode-btn" data-mode="yesterday">昨日回顾</button>
+          </div>
+          <div id="studyUnitWrap" class="mt-3">
+            <label class="text-xs font-semibold text-slate-500" for="studyUnitSelect">当前单元</label>
+            <select id="studyUnitSelect" class="input mt-1"></select>
+          </div>
+          <p id="modeHint" class="text-xs text-slate-500 mt-2"></p>
+        </div>
+        <div class="card p-4 mb-4">
+          <div class="flex justify-between text-sm mb-2"><span>今日进度</span><span id="progressText" class="text-slate-500">0 / 0</span></div>
+          <div class="progress"><div id="progressBar" style="width:0%"></div></div>
+          <div class="grid stat-grid gap-3 mt-4 text-center">
+            <div><div id="statReviewed" class="font-bold text-lg">0</div><div class="text-xs text-slate-500">已复习</div></div>
+            <div><div id="statKnown" class="font-bold text-lg text-emerald-600">0</div><div class="text-xs text-slate-500">认识</div></div>
+            <div><div id="statUnknown" class="font-bold text-lg text-rose-600">0</div><div class="text-xs text-slate-500">不认识</div></div>
+          </div>
+        </div>
+
+        <div id="studyArea">
+          <div id="wordCard" class="word-card card w-full text-center">
+            <span id="levelBadge" class="pill mb-4">等级 0</span>
+            <span id="wordText" class="text-4xl font-bold break-all"></span>
+            <span id="meaningText" class="answer text-lg text-slate-600 mt-5 hidden"></span>
+            <span id="tapHint" class="tap-hint text-sm text-slate-400 mt-5">先判断是否认识，选择后显示释义</span>
+          </div>
+          <div class="grid gap-3 mt-4" style="grid-template-columns:1fr 1fr">
+            <button id="unknownBtn" class="btn bg-rose-500 text-white">不认识</button>
+            <button id="knownBtn" class="btn bg-emerald-500 text-white">认识</button>
+          </div>
+          <button id="skipBtn" class="btn btn-outline w-full mt-3">暂时跳过</button>
+        </div>
+
+        <div id="emptyStudy" class="card empty hidden">
+          <div class="text-3xl mb-3">✓</div>
+          <h2 id="emptyTitle" class="font-bold text-lg">今天的任务完成了</h2>
+          <p id="emptyHint" class="text-sm mt-2">新增单词，或明天再来复习。</p>
+          <button data-open-add class="btn bg-slate-900 text-white mt-4">添加单词</button>
+          <button id="restartUnitBtn" class="btn btn-outline mt-3 hidden">再刷一轮</button>
+        </div>
+      </section>
+
+      <section id="wordsView" class="view hidden">
+        <div class="flex items-center justify-between mb-4"><div><h2 class="text-lg font-bold">全部词库</h2><p id="wordCount" class="text-sm text-slate-500"></p></div><button data-open-add class="btn bg-slate-900 text-white">＋ 新增</button></div>
+        <div class="card p-4 mb-4">
+          <h3 class="font-semibold">单元统计</h3>
+          <p class="text-xs text-slate-500 mt-1">记忆等级达到 3 视为已掌握</p>
+          <div id="unitStats" class="mt-2"></div>
+        </div>
+        <input id="searchInput" class="input mb-3" type="search" placeholder="搜索英文或中文">
+        <div id="wordList" class="card px-4"></div>
+      </section>
+
+      <section id="dataView" class="view hidden">
+        <h2 class="text-lg font-bold mb-4">数据管理</h2>
+        <div class="card p-4 space-y-3">
+          <div><h3 class="font-semibold">备份与恢复</h3><p class="text-sm text-slate-500 mt-1">JSON 备份包含全部单词、所属单元、记忆等级和学习统计，并兼容旧版备份。</p></div>
+          <button id="exportBtn" class="btn bg-slate-900 text-white w-full">导出 JSON 备份</button>
+          <button id="importBtn" class="btn btn-outline w-full">导入 JSON 备份</button>
+          <input id="fileInput" class="hidden" type="file" accept="application/json,.json">
+        </div>
+        <div class="card p-4 mt-4">
+          <h3 class="font-semibold">复习规则</h3>
+          <p class="text-sm text-slate-500 mt-2">每个单词需先判断一次，显示释义后再确认一次；两次都选“认识”才算认识。今日生词累计确认 3 次后移除，未完成内容次日进入昨日回顾；已掌握词按 1、2、4、7、15、30、60 天回顾。</p>
+        </div>
+        <div class="card p-4 mt-4">
+          <h3 class="font-semibold danger">危险操作</h3>
+          <button id="clearBtn" class="btn btn-outline w-full mt-3 danger">清空全部本地数据</button>
+        </div>
+        <p class="text-xs text-slate-400 text-center mt-4">数据只保存在当前浏览器中，请定期导出备份。</p>
+      </section>
+    </main>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <button class="nav-btn active" data-view="study">◉<br>背单词</button>
+      <button class="nav-btn" data-view="words">▤<br>词库</button>
+      <button class="nav-btn" data-view="data">⇅<br>数据</button>
+    </div>
+  </nav>
+
+  <div id="addModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-panel">
+      <div class="flex justify-between items-center mb-4"><h2 class="text-lg font-bold">新增单词</h2><button id="closeModal" class="icon-btn">关闭</button></div>
+      <form id="addForm" class="space-y-3">
+        <div><label class="text-sm font-semibold" for="englishInput">英文</label><input id="englishInput" class="input mt-1" required maxlength="100" autocomplete="off" placeholder="例如: resilient"></div>
+        <div><label class="text-sm font-semibold" for="chineseInput">中文释义</label><input id="chineseInput" class="input mt-1" required maxlength="300" autocomplete="off" placeholder="例如: 有韧性的；能复原的"></div>
+        <div>
+          <label class="text-sm font-semibold" for="unitInput">所属单元</label>
+          <select id="unitInput" class="input mt-1"></select>
+          <input id="newUnitInput" class="input mt-2 hidden" maxlength="50" autocomplete="off" placeholder="输入新单元名称">
+        </div>
+        <button class="btn bg-slate-900 text-white w-full" type="submit">保存并加入今日复习</button>
+      </form>
+    </div>
+  </div>
+  <div id="toast" class="toast hidden"></div>
+
+  <script>
+    'use strict';
+
+    // LocalStorage 中只使用这一个键，便于备份和迁移。
+    const STORAGE_KEY = 'dailyVocabularyApp_v3';
+    const REVIEW_INTERVALS = [1, 2, 4, 7, 15, 30, 60];
+    const DEFAULT_UNIT = '未分类';
+    const MASTERED_LEVEL = 3;
+    const SAMPLE_WORDS = [["radiate","vt.;vi.;adj. 放射，散发，辐射，传播，广播；发光，辐射，流露；有射线的，辐射状的","Unit 1"],["radiant","adj. 发光的，明亮的，辐射的，容光焕发的；放射的，辐射的，辐射物[质]","Unit 1"],["radical","n.;adj. 激进分子，词根，基础，根式，根；激进的，根本的，基本的，根的","Unit 1"],["object","n.;vi.;vt. 物体，目标，目的，对象，宾语，客体；反对，抱反感；提出...来反对；对象","Unit 1"],["objection","n. 异议，反对，不喜欢，缺点，缺陷，妨碍，拒绝之理由；异议，反对，抗议","Unit 1"],["obligation","n. 义务，责任，约束，契约，恩惠，债务；待付款，债务，义务","Unit 1"],["oblige","vt.;vi. 强制，施恩惠于，使感激；施恩惠，帮忙","Unit 1"],["obscure","adj.;vt. 模糊的，昏暗的，难解的，晦涩的，偏僻的，微贱的，无名的；使变暗，隐藏，使变模糊，使难解","Unit 1"],["observation","n. 观察，注意，观测，观察力；观察","Unit 1"],["observe","vt.;vi. 觉察到，遵守，注意到，庆祝；注意，评论","Unit 1"],["obsession","n. 困扰，困扰人的情绪；强迫观念","Unit 1"],["obsolete","adj.;n. 荒废的，成废物的，陈旧的，老式的；废词，废物","Unit 1"],["obtain","vt.;vi. 获得，达到；流行，得到公认","Unit 1"],["obvious","adj. 明显的，明白的，显然的，平淡无奇的","Unit 1"],["ideal","n.;adj. 理想，典范，观念，思想，最后目标；理想的，完美的，空想的，观念的，唯心论的","Unit 1"],["ideology","n. 思想体系，意识形态，观念学，空论；观念学，观念形态","Unit 1"],["identical","adj. 同一的，恒等的，完全相同的；同一的，同等的","Unit 1"],["identification","n. 识别，身份证明，认同；鉴定；鉴别；鉴别法；认证","Unit 1"],["identify","vt.;vi. 识别，认为...等同于，确定，使参与；一致，认同","Unit 1"],["identity","n. 身份，相同，一致，特性，恒等式；(打)标记，标识","Unit 1"],["journal","n. 日记，杂志，日报；轴颈","Unit 1"],["journalist","n. 新闻记者，从事新闻杂志业的人","Unit 1"],["journey","n.;vi.;vt. 旅程，旅行，行程；旅行；游历","Unit 1"],["judge","n.;vt.;vi. 法官，裁判员，审判官，鉴定人；审理，鉴定，判断，判决，裁定；下判断，作评价","Unit 1"],["judg(e)ment","n. 裁判，宣告，判决书；判断","Unit 1"],["judicial","adj. 法庭的，公正的，审判上的，司法的；司法的，审判上的，法官的","Unit 1"],["jury","n.;adj. 陪审团，评判委员会；应急的","Unit 1"],["jurisdiction","n. 司法权，审判权，管辖权；法律管辖权，审判权","Unit 1"],["justice","n. 正义，公平，公正，正确，司法，审判","Unit 1"],["justify","vt.;vi. 替...辩护，证明；证明合法；段落重排，两端对齐","Unit 1"],["label","n.;vt. 标签，称号，商标，标志；贴标签于，标注；标志；标注；DOS外部命令:用于建立改变或删除磁盘卷标号","Unit 1"],["lag","n.;adj.;vi.;vt. 落后，囚犯，迟延，桶板，防护套；最后的；落后，蹒跚，缓缓而行，滞后；落后于，押往监狱，加上外套；延迟；落后","Unit 1"],["largely","adv. 大量地，很多地，大半地","Unit 1"],["lateral","n.;adj. 侧部，支线，边音；侧面的，旁边的","Unit 1"],["latter","adj. 后者的，较后的，近来的","Unit 1"],["lawsuit","n. 诉讼；诉讼，诉讼案件","Unit 1"],["magnitude","n. 巨大，重大，重要，大小，数量，星等(指星的亮度)；大小；值","Unit 1"],["magnify","vt.;vi. 放大，扩大，赞美，夸大；有放大能力","Unit 1"],["magnificent","adj. 华丽的，高尚的，宏伟的","Unit 1"],["maintain","vt. 维持，维修，保持，坚持，供养，主张；维修","Unit 1"],["maintenance","n. 维护，保持，维修，生活费用，坚持，扶养；维护；维修","Unit 1"],["major","n.;adj.;vi. 主修课，成年人，陆军少校；主要的，较多的，大部分的，成年的，严重的；主修；主要，主要刻度","Unit 1"],["majority","n. 多数，大半；多数逻辑","Unit 1"],["make","vt.;vi.;n. 制造，安排，创造，构成，使得，产生，造成，整理，布置，引起，到达，进行；开始，前进，增大，被制造，被处理；制造，构造，性情","Unit 1"],["theory","n. 理论，学说，原理，意见，推测；理论","Unit 1"],["theoretical","adj. 理论的，理论上的，假设的，推理的；理论的","Unit 1"],["therapy","n. 治疗；疗法，治疗","Unit 1"],["qualification","n. 资格，条件，限制；限定","Unit 1"],["qualify","vi.;vt. 取得资格，有资格；使有资格，使合格，限定，限制，准予","Unit 1"],["quality","n.;adj. 品质，特性，才能，质量；优质的；品质","Unit 1"],["qualitative","adj. 性质的，质的，定性的","Unit 1"],["safeguard","n.;vt. 保卫，保护措施，防护设施；保卫，保护","Unit 1"],["Safety","n.;vt. 安全，保险，平安，保安设备；保护，防护","Unit 1"],["savage","adj.;vt.;n. 未开化的，野蛮的，无礼的，残酷的，原始的，粗鲁的，未开发的；用暴力对付，凶猛攻击；原始人，粗鲁人","Unit 1"],["save","n.;vt.;vi.;prep. 救球；解救，挽救，储蓄，保存，节省，保留；挽救，节省，救球；除...之外；保存","Unit 1"],["saving","n.;adj.;prep. 存款，挽救，节约；搭救的，节约的，保留的，补偿的；除...之外","Unit 1"],["scale","n.;vt.;vi. 刻度，衡量，比例，比例尺，数值范围，等级，规模，天平，秤，鳞，积垢；依比例决定，攀登，测量，绘制，刮鳞，使生垢，过秤；剥落，生水垢，重量为，攀登，衡量；刻度","Unit 1"],["Scene","n. 场，情景，镜头，发生地点，道具，布景，景色；现场","Unit 1"],["scenery","n. 风景，景色，舞台布景","Unit 1"],["pace","n.;vi.;vt. 速度，步调，步法；踱步，缓慢走；用步测，踱步于","Unit 1"],["panel","n.;vt. 嵌板，仪表板，专题讨论小组，全体陪审员；嵌镶板","Unit 1"],["panorama","n. 全景，全貌，概论，范围","Unit 1"],["prove","vt.;vi. 证明，查验，检验，勘探，显示；证明是","Unit 1"],["provide","vt.;vi. 提供，供应，规定，预备；作准备，抚养，规定","Unit 1"],["provided","conj. 倘若，以...为条件","Unit 1"],["mediate","adj.;vt.;vi. 居间的，间接的；斡旋，调停；处于中间，调解","Unit 2"],["meditation","n. 沉思，冥想","Unit 2"],["medium","n.;adj. 媒体，方法，媒介；半生熟的，中间的；媒体，中","Unit 2"],["elegant","adj. 优雅的，端庄的，高雅的","Unit 2"],["element","n. 元件，元素，要素；部分；成分；单元；码元；元件；元素；单元","Unit 2"],["elementary","adj. 初步的，基本的；元素的，基础的，初级的","Unit 2"],["eliminate","vt. 除去，排除，剔除，消除","Unit 2"],["abolish","vt. 废止，革除，消灭；废除，取消，裁撤","Unit 2"],["absence","n. 缺席，缺乏，没有；失神","Unit 2"],["absent","adj.;vt. 缺席的，不在的，缺乏的，漫不经心的；使缺席","Unit 2"],["abroad","adv.;adj. 往国外，到室外，到处；往国外的，在室外的，广泛四散的","Unit 2"],["absolute","adj.;n. 绝对的，专制的，完全的，独立的；绝对事物","Unit 2"],["absorb","vt. 吸收，使全神贯注，同化，买进，理解，承受，忍受，承担；吸收","Unit 2"],["bar","n.;vt. 条，棒，酒吧，栅，障碍物；禁止，阻挡，妨碍；棒形图","Unit 2"],["bare","adj.;vt. 赤裸的，缺少的，无遮蔽的，坦率的；使赤裸，露出","Unit 2"],["barely","adv. 几乎不","Unit 2"],["bargain","n.;v. 交易，买卖协定，特价商品；讲价，交易","Unit 2"],["capable","adj. 有能力的，能的，能干的","Unit 2"],["capacity","n. 容量，能力，才能，资格；容量","Unit 2"],["capital","n.;adj. 首都，大写字母，资本；首都的，重要的","Unit 2"],["captive","n.;adj. 俘虏，迷恋者；被俘的，被迷住的","Unit 2"],["capture","n.;vt. 抓取，战利品，捕获之物；抓取，获得，迷住；截获命令","Unit 2"],["career","n. 事业，生涯，成功；职业，专业，履历","Unit 2"],["careful","adj. 小心的，谨慎的","Unit 2"],["case","n.;vt. 情形，情况，箱，容器，事实，病例，案例，框子；装箱，包盖","Unit 2"],["cast","n.;vt.;vi. 演员阵容，投掷，铸件，预测，特性；投，掷，抛，脱落，铸，使弯曲，计算；投，计算，浇铸成型","Unit 2"],["casual","adj.;n. 偶然的，不经意的，便装的；临时工，待命士兵","Unit 2"],["casualty","n. 意外事故，伤亡，受害者；事故","Unit 2"],["catch","n.;vt.;vi. 捕捉，陷阱，捕捉之物，抓，拉手；捕捉，赶上，感染，听清楚；抓住，燃着","Unit 2"],["category","n. 种类，类项；分类","Unit 2"],["cater","v. 提供饮食及服务，投合，迎合","Unit 2"],["cause","n.;vt. 原因，目标；引起，使产生，使遭受","Unit 2"],["caution","n.;vt. 小心，慎重，警示；警告","Unit 2"],["cautious","adj. 谨慎的，小心的","Unit 2"],["cease","n.;v. 停止；停止，终了","Unit 2"],["celebrate","v. 庆祝，祝贺，举行","Unit 2"],["celebrity","n. 名声，名人","Unit 2"],["ceremony","n. 典礼，仪式，礼节；典礼，仪式","Unit 2"],["certain","adj. 确定的，某一个的，必然的；确凿的，无疑的，可靠的","Unit 2"],["certainty","n. 确定，确实的事情；确定，肯定，必然的事","Unit 2"],["certificate","n.;vt. 证书，证明书；发给证明书，用证书批准，用证书证明","Unit 2"],["certify","v. 证明，保证","Unit 2"],["decline","n.;vt.;vi. 衰退，跌落，下降；使降低，婉谢；下降，衰落，偏斜","Unit 2"],["decrease","n.;v. 减少，减少量；减少","Unit 2"],["decree","n.;vt.;vi. 法令，判决，天意；颁布，判决；发布命令","Unit 2"],["dedicate","vt. 献出，贡献","Unit 2"],["deduce","vt. 推论，演绎出；推断，推出，演绎","Unit 2"],["deduct","vt. 扣除，减去；扣除，减去，折扣","Unit 2"],["fashion","n.;vt. 流行，风尚，时样；形成，造，作","Unit 2"],["fashionable","adj. 时髦的，上流社会的，流行的","Unit 2"],["favor","n.;vt. 好意，喜爱；赐予，支持，喜欢，证实","Unit 2"],["favorable","adj. 有利的，赞许的，良好的","Unit 2"],["sit","vi.;vt.;n. 坐，就座，坐落；使就座，骑；坐，衣服合身","Unit 2"],["site","n.;vt. 位置，场所，地点；给...择址","Unit 2"],["situate","vt. 使位于，使处于","Unit 2"],["situation","n. 情形，境遇，位置；情境，处境","Unit 2"],["skeleton","n.;adj. 骨骼，骨瘦如柴的人，梗概，骨干，残骸；骨骼的，概略的，基层的，骨干的；骨架","Unit 2"],["skeptical/sceptical","adj. 怀疑论的，怀疑的，不可知论的；怀疑的，不信的，怀疑论者的","Unit 2"],["sketch","n.;v. 素描，草图，小品；描绘略图，画素描或速写","Unit 2"],["embrace","n.;vt.;vi. 拥抱；拥抱，互相拥抱，包含，收买","Unit 3"],["embed","vt. 使插入，使嵌入，使深留脑中；嵌入","Unit 3"],["embody","vt. 具体表达，使具体化；合并，具体化，具体表现","Unit 3"],["embryo","n. 胚胎，胎儿，胚芽；胚，胚胎","Unit 3"],["licit","adj. 合法的，正当的","Unit 3"],["lite","adj. 低盐的；清淡的；简化的","Unit 3"],["elsewhere","adv. 在别处","Unit 3"],["thirst","n.;vi. 口渴，渴望","Unit 3"],["thorough","adj. 十分的，彻底的","Unit 3"],["though","adv.;conj. 然而，可是；虽然，纵然","Unit 3"],["thought","n. 想法，思想，思维，关心，挂念；think的过去式和过去分词","Unit 3"],["thoughtful","adj. 深思的，体贴的","Unit 3"],["threat","n. 恐吓，恶兆，威胁；威胁","Unit 3"],["threaten","vt.;vi. 恐吓，威胁，预示...的凶兆；威胁，恫吓，可能来临","Unit 3"],["update","vt.;n. 更新，使现代化；更新","Unit 3"],["upgrade","n.;adv.;vt.;vi. 上坡，升级，上升；往上；使升级，提升，改良品种；升级","Unit 3"],["Uphold","vt. 支撑，赞成，鼓励，举起，坚持；确认，赞成，支持","Unit 3"],["upset","adj.;vt.;vi. 弄翻的，混乱的，心烦的；弄翻，颠覆，推翻，打乱，使不适，使心烦；翻倒","Unit 3"],["up-to-date","adj. 直到现在的，最近的，现代化的；最新的","Unit 3"],["ventilate","vt. 使空气流通，使通风，公开讨论，公开；通风，换气","Unit 3"],["venture","n.;vt.;vi. 冒险，风险；敢于，冒...的危险；冒险","Unit 3"],["widespread","adj. 充分伸展的，广布的，普及的，流传广的","Unit 3"],["win","vt.;vi.;n. 赢得，打胜，成功；获胜，达到，影响；胜利，赢，收益","Unit 3"],["wit","n. 机智，智力，头脑，理智，妙语，机智的人","Unit 3"],["withdraw","vt.;vi. 撤回，取回，撤消，使撤退，拉开，移开；撤退，离开","Unit 3"],["witness","n.;vt.;vi. 证人，目击者，证据，证词；目击，作证，证明，表明；作证人，作为证据","Unit 3"],["inaugurate","vt. 开始，举行...就职典礼","Unit 3"],["incentive","n.;adj. 动机；激励的","Unit 3"],["incidence","n. 发生，发生率，影响，负担者，入射，倾角；入射，发生率，发生数","Unit 3"],["incident","n.;adj. 事件，事变，小事；附带的，易于发生的，外来的，入射的","Unit 3"],["incidentally","adv. 伴随地，偶然，顺便","Unit 3"],["incline","n.;vt.;vi. 倾斜，斜坡，斜面；使倾向于，使倾斜；倾向，倾斜，爱好，易于","Unit 3"],["academic","adj.;n. 学院的，学术的，不切实际的；大学生，大学教师，学者，学会会员","Unit 3"],["academy","n. 学院，院校，学会","Unit 3"],["accelerate","v. 加速，促进","Unit 3"],["accept","vt.;vi. 接受，承认，同意，相信，赞成，承担，承兑，采纳，接纳，容忍；同意","Unit 3"],["acceptance","n. 接受，接纳，承认，同意，赞同，容忍，相信；承兑，认付，(工程)验收","Unit 3"],["access","n.;vt. 通路，入口，接近，进入，使用权，发作；访问，存取，接近，使用；访问，存取","Unit 3"],["accessory","n.;adj. 附件，零件，附加物，从犯，同谋；附属的，补充的，同谋的，帮凶的，非主要的，副的；附件","Unit 3"],["beginning","n. 开始","Unit 3"],["behalf","n. 利益，方面","Unit 3"],["behave","vi.;vt. 举止端正，行为规矩；检点(自己的)行为，使表现好","Unit 3"],["behavio(u)r","n. 行为，举止；特性，性能，特点，行为，动作，状态","Unit 3"],["belief","n. 信念，相信，信仰","Unit 3"],["believe","v. 相信","Unit 3"],["belong","vi. 属于，合适","Unit 3"],["beneficial","adj. 有益的，受益的；有使用权的，可享利益的","Unit 3"],["benefit","n.;vt.;vi. 利益；有益于；受益","Unit 3"],["benevolent","adj. 善意的，慈善的","Unit 3"],["benign","adj. 善良的，良性的；良性的","Unit 3"],["challenge","n.;vt.;vi. 挑战，盘问；向...挑战，要求，怀疑；挑战，对(证据等)表示异议","Unit 3"],["chance","n.;vi.;vt. 机会，意外，可能性；偶然发生；冒险","Unit 3"],["change","n.;vt. 变化，找回的零钱，找头，更换；改变，更换，兑换","Unit 3"],["channel","n.;vt. 海峡，航道，频道；引导，在...上挖沟，形成河道；信道，通道","Unit 3"],["character","n. 个性，字符，人物，性质，品格，资格；字符","Unit 3"],["characterise/-ize","vt.;vi. 表示...的特性，成为/是...的特性，刻划/描述...的性格；在文艺作品中塑造人物，描绘性格","Unit 3"],["characteristic","n.;adj. 特性，特征，特色；特性的，特有的，有特色的；阶；指数","Unit 3"],["defend","vt. 防护，辩护，防卫；作...的辩护律师，辩护，为...答辩","Unit 3"],["define","vt. 定义，规定，使明确；定义","Unit 3"],["definite","adj. 明确的，一定的；明确的，确切的，一定的","Unit 3"],["definition","n. 定义，精确度，清晰度；清晰度；清晰度","Unit 3"],["defy","vt.;n. 藐视，挑衅，使落空；挑战","Unit 3"],["degree","n. 程度，度数，学位，度；度，程度","Unit 3"],["delay","n.;v. 耽搁，迟滞；耽搁，延迟；延迟，延时","Unit 3"],["delicate","adj. 细致优雅的，微妙的，美味的；柔弱的","Unit 3"],["deliver","vt. 递送，陈述，释放，发表，引渡，投递，交付；交运","Unit 3"],["delivery","n. 递送，交付，分娩，交货，引渡；交货额","Unit 3"],["fiction","n. 小说，虚构故事；虚构的事实，捏造，拟制","Unit 3"],["field","n.;vt.;adj. 领域，田地，场地，战场，场，域；使...晒在场上，使上场；田间的，野生的，野外的，田赛的；域，字段","Unit 3"],["fierce","adj. 凶猛的，猛烈的，热烈的，暴躁的","Unit 3"],["fight","n.;v. 打架，争吵，斗志；对抗，打架","Unit 3"],["figure","n.;vt.;vi. 数字，价格，图形，形状；描绘，表示，演算，认为；计算，出现，估计","Unit 3"],["finance","n.;vt.;vi. 财政，财务；供给...经费，负担经费；筹措资金","Unit 3"],["financial","adj. 财政的，金融的；财政的，金融的，财务的","Unit 3"],["finding","n. 发现，发现物，决定，裁决；调查结果，对事实的认定，判定的要素","Unit 3"],["finite","adj.;n. 有限的，有穷的，限定的；有限物","Unit 3"],["firm","n.;adj.;vt.;vi.;adv. 公司，商号；坚定的，坚强的，牢固的，结实的，坚硬的，坚挺的，严格的，确定的；使牢固，使坚定；变稳固，变坚实；稳固地","Unit 3"],["first","adv.;adj.;num.;n. 首先，第一，优先；第一的；第一；开始，第一","Unit 3"],["fit","n.;adj.;vt.;vi. 适宜，合身，发作，痉挛；适宜的，对的，准备好的；适合，安装，使合身，使适应，使合格；适合，符合，合身；非特","Unit 3"],["global","adj. 通用的，全球的，球形的，综合的，普遍的；共用","Unit 3"],["globe","n.;v. 球，球状物，地球仪，天体；(使)成球状","Unit 3"],["abandon","vt.;n. 放弃，抛弃，遗弃，使屈从，沉溺，放纵；放任，无拘束，狂热","Unit 4"],["abide","vi.;vt. 停留，遵守，居留，继续下去；忍受，经受，屈从于","Unit 4"],["ability","n. 能力，才干；能力，才能","Unit 4"],["able","adj. 能干的，能够的","Unit 4"],["abnormal","adj.;n. 反常的，不规则的，变态的，畸形的；畸形的人","Unit 4"],["background","n. 背景，背景资料；背景，后台","Unit 4"],["balance","n.;vi.;vt. 平衡，差额；平衡，相等；称，权衡，比较，使平衡，结算，抵消","Unit 4"],["base","n.;vt.;adj. 底部，垒，基础，基地；以...作基础；卑鄙的，低劣的；基准","Unit 4"],["basement","n. 地下室，墙脚；地下室","Unit 4"],["basic","n.;adj. 基本原理，要素，基本规律；基本的，碱性的；(计算机)BASIC语言","Unit 4"],["basis","n. 基础，主要成分；基底","Unit 4"],["calculate","v. 计算，预测，计划，打算","Unit 4"],["call","n.;vt.;vi. 呼叫，访问，打电话，号召，召集，要求；呼叫，召集，打电话；叫喊，访问，叫牌；调用；呼叫；DOS内部命令:在批处理文件中调用另一个批处理文件","Unit 4"],["calm","n.;adj.;vi.;vt. 平稳，风平浪静；平静的，冷静的；平静下来，镇静；使平静","Unit 4"],["campaign","n.;vi. 战役，运动，竞选运动；参加运动，作战","Unit 4"],["candidate","n. 候选人，投考者；候选，候补者","Unit 4"],["data","n. 资料，数据；数据；DOS内部命令:用于显示或设定系统的日期","Unit 4"],["database","n. 数据库","Unit 4"],["date","n.;vt.;vi. 日期，约会，枣椰树；约会，定日期；注明日期，过时","Unit 4"],["dazzle","v.;n. (使)眼花，炫耀；耀眼","Unit 4"],["deal","n.;vi.;vt. 交易，协定，数量，买卖，松木板；处理，应付，做生意；分配，发牌，给予；发牌","Unit 4"],["dealer","n. 经销商，商人；交易员，贩卖商","Unit 4"],["debate","n.;v. 辩论，讨论；争论，辩论","Unit 4"],["decade","n. 十年，十","Unit 4"],["decide","v. 决定，判决","Unit 4"],["decision","n. 决定，决心，决断；判定","Unit 4"],["decisive","adj. 决定性的，坚定的，果断的","Unit 4"],["decorate","v. 装饰","Unit 4"],["economic","adj. 经济上的，实用的，节省的；经济的","Unit 4"],["economical","adj. 节俭的，经济的，合算的；经济的，节约的","Unit 4"],["economics","n. 经济学","Unit 4"],["economy","n. 经济，理财，节约；经济，整体","Unit 4"],["educate","vt. 教育，培养，训练","Unit 4"],["education","n. 教育，训练，教育学；教育，训练","Unit 4"],["effect","n.;vt. 结果，影响，效果，印象；实行，引起，完成；效果","Unit 4"],["effective","adj.;n. 有效的，有力的，实际的；有生力量","Unit 4"],["efficient","adj. 有效率的，能干的","Unit 4"],["efficiency","n. 效率，效能，功效；效率，效力","Unit 4"],["effort","n. 努力，成就","Unit 4"],["fabricate","vt. 制造，建造，装配，伪造","Unit 4"],["face","n.;vt.;vi. 脸，面容，正面，外观；面对，朝，正视，面临；朝，向；现场可改变的控制元件","Unit 4"],["facet","n. (多面体的)面，方面，琢面；小平面，小面","Unit 4"],["factor","n. 因素，因数，系数，基因，代理人；因式","Unit 4"],["fade","vi.;vt.;n.;adj. 褪色，消失，凋谢；使褪色；淡入，淡出；平淡的","Unit 4"],["fail","vi.;vt.;n. 失败，缺乏，中断，衰退，失灵；忘记，使...失望，缺乏，不及格；不及格","Unit 4"],["failure","n. 失败，失败者，不足，缺乏，破产；故障；失效","Unit 4"],["fair","n.;adj.;adv.;vi. 展览会，市集，美好的事物；公平的，按规则进行的，不好不坏的，晴朗的，美丽的；公平地，正面地，有教养地，清楚地；转晴","Unit 4"],["fairly","adv. 美观地，公平地，相当地，清楚地","Unit 4"],["fan","n.;vt.;vi. 风扇，迷，狂热者，爱好者；煽动，刺激，吹拂；飘动，成扇形散开","Unit 4"],["fancy","n.;adj.;vt.;vi. 想象力，幻想，喜好；想象的，精美的，新奇的，奇特的，高价的，特级的；想象，设想，相信，喜爱；想象，幻想","Unit 4"],["fascinate","vt.;vi. 令人入神，使着迷；入迷","Unit 4"],["gain","n.;vt.;vi. 增益，获得，利润，收获，增加；得到，增进，赚到；获利，增加；增益","Unit 4"],["gamble","n.;v. 赌博，冒险；赌博，孤注一掷","Unit 4"],["gap","n.;vt.;vi. 缝隙，缺口，间断，间距，通用汇编程序；打开缺口，造成缝隙；豁开；通用汇编程序，图形应用程序，间距","Unit 4"],["gene","n. 基因；基因(遗传因子)","Unit 4"],["general","n.;adj. 一般，将军，大体；全面的，大体的，总的，一般的，普遍的；常规","Unit 4"],["generalize/-ise","vt.;vi. 一般化，概括，推广；形成概念，笼统讲","Unit 4"],["habit","n.;vt. 习惯，嗜好，习性；使穿衣","Unit 4"],["habitat","n. 栖息地，居留地，自生地，聚集处；习生地，产地，生境，栖所","Unit 4"],["hamper","n.;vt. 食篮，阻碍物，食盒；阻碍，使困累，妨碍，牵制","Unit 4"],["handicap","n.;vt. 障碍，困难，不利条件；加障碍于，妨碍","Unit 4"],["shield","n.;vt.;vi. 盾，防卫物，保护者，屏蔽；保护，遮蔽，屏蔽，庇护，挡开，避开；起保护作用","Unit 4"],["shift","n.;vt.;vi. 变化，移动，轮班，手段，应急办法，移位；替换，转移，改变，推卸，变速；转换，移动，转变，推托，变速；DOS内部命令:该命令可将批处理参数向左移动一个位置","Unit 4"],["shoulder","n.;vt.;vi. 肩，肩膀，衣肩；肩负，负担，担任；用肩推挤","Unit 4"],["show","n.;vt.;vi. 显示，表现，展览，卖弄，炫耀，外观，演出，洋相；表示，显示，展现，陈列，演出，表明，指出，带领；露面，显现，演出；显示","Unit 4"],["shower","n.;vi.;vt. 阵雨，淋浴，一阵，展出者，显示者；淋浴，下阵雨；淋湿，倾注","Unit 4"],["glamour/glamor","n.;vt. 魅力，迷人的美，魔法；迷惑","Unit 5"],["generate","vt. 产生，发生，导致；产生","Unit 5"],["generation","n. 一代，一世，产生；生殖，世代","Unit 5"],["generator","n. 产生器，发电机，生产者；发生器","Unit 5"],["generous","adj. 慷慨的，有雅量的，大量的，丰富的","Unit 5"],["genius","n. 天才，天赋，精神，神魔；特征","Unit 5"],["gift","n.;vt. 礼物，赠予，天才；赋予","Unit 5"],["genre","n. 类型，流派","Unit 5"],["giant","n.;adj. 巨人，大力士，巨大怪物；庞大的，巨大的","Unit 5"],["gigantic","adj. 巨人般的，巨大的","Unit 5"],["give","n.;vt.;vi. 弹性，适应性；给，授予，供给，产生，发表，付出，献出，让出；捐赠，支持不住，让步","Unit 5"],["happen","vi. 发生，发生，恰巧","Unit 5"],["harm","n.;vt. 伤害，害处；伤害，损害","Unit 5"],["harmony","n. 协调，和睦，调和；和声学","Unit 5"],["harsh","adj. 粗糙的，刺耳的，严厉的；粗糙的，严厉的，苛刻的","Unit 5"],["ignorance","n. 无知，愚味；无知，不知情，愚昧","Unit 5"],["ignorant","adj. 无知识的，不知道的，由无知产生的；无知的，愚昧的，不知情的","Unit 5"],["ignore","vt. 不理睬，忽视，驳回，忽略；忽略","Unit 5"],["illness","n. 疾病，恶意；病","Unit 5"],["illusion","n. 幻影，错觉，幻想；错觉","Unit 5"],["illustrate","vt.;vi. 举例说明，作图解，阐明；举例说明","Unit 5"],["illustration","n. 例证，插图；插图","Unit 5"],["image","n.;vt. 影像，肖像，想象，图像，形象，翻版；作...的像，反映，想象，象征；图像；图象","Unit 5"],["imagine","vt.;vi. 想像，设想，猜测；想像起来","Unit 5"],["imaginary","adj. 想像的，虚构的，假想的","Unit 5"],["imagination","n. 想像，听觉，想像力；想像","Unit 5"],["imaginative","adj. 想像的，虚构的","Unit 5"],["imitate","vt. 模仿，效法，冒充，仿造","Unit 5"],["imitation","n. 模仿，效法，冒充，赝品；模仿，仿制，仿制品","Unit 5"],["lead","n.;vt.;vi.;adj. 铅，铅条，领导，超前量，领引，榜样，主角，导线；引导，带领，领导，指挥，致使，加铅于，用铅包；领导，带头，导致，用测深锤测深，被铅覆盖；带头的，最重要的","Unit 5"],["leadership","n. 领导能力，领导阶层","Unit 5"],["leading","n.;adj. 领导，指挥，神示，铅板；领导的，主要的，在前的","Unit 5"],["legal","adj. 法律的，法定的，合法的；法定权利；法律(上)的，合法的","Unit 5"],["legislation","n. 立法，法律；立法，法规","Unit 5"],["legitimate","adj.;vt. 合法的，正当的，婚生的；认为正当，立为嫡嗣，使合法","Unit 5"],["leisure","n.;adj. 空闲，闲暇，悠闲；空闲的，有闲的","Unit 5"],["lever","n.;vt.;vi. 杠杆，似杠杆之工具；撬开；使用杠杆","Unit 5"],["levy","n.;vi.;vt. 税款，所征的人数，征收；征税，课税；征收，强求，召集","Unit 5"],["manage","vi.;vt. 处理；管理，控制，维持，达成，经营，运用","Unit 5"],["management","n. 经营，支配，管理；管理处","Unit 5"],["mandate","n.;vt. 命令，指令，要求；委任统治","Unit 5"],["manifest","n.;adj.;vi.;vt. 载货单，运货单，旅客名单；显然的，明白的；显示，出现；表明，表现，证明","Unit 5"],["manipulate","vt. 操纵，利用，操作，巧妙地处理，假造","Unit 5"],["manner","n. 样子，礼貌，风格；方式，方法，样式","Unit 5"],["margin","n.;vt. 页边的空白，边缘，界限，余裕，差数，差额，保证金；加边于，加旁注于；页边距","Unit 5"],["marginal","adj. 边缘的，最低限度的，有旁注的；缘的","Unit 5"],["mass","n.;adj.;vt.;vi. 块，大多数，质量，大量，群众，弥撒；群众的，大规模的，整个的；使集合，集中；聚集","Unit 5"],["massive","adj. 大而重的，宽大的，宏伟的；大块的，整块的，大量的","Unit 5"],["massacre","n.;vt. 大屠杀；大屠杀，残杀","Unit 5"],["occupation","n. 职业，占有，占有期，占领，占领军；占有，占用，职业","Unit 5"],["occupy","vt. 占领，占(时间、空间等)，住进，担任，使从事，使全神贯注；占领，占据，占有","Unit 5"],["occur","vi. 发生，被想到，存在","Unit 5"],["occurrence","n. 发生，事件，出现；发生","Unit 5"],["offend","v. 犯罪，冒犯，违反，进攻","Unit 5"],["offer","n.;vt.;vi. 给予(物)，出价，提议，意图，报价；提供，出价，奉献，试图，使出现，演出；出现，献祭，提议，求婚","Unit 5"],["offset","n.;vt.;vi. 抵消，把...并列，旁系，支管，用胶印法印；弥补，抵消，胶印；装支管；偏移量","Unit 5"],["offspring","n. 子孙，后代，产物；后辈，子孙，后裔","Unit 5"],["paragraph","n.;vt.;vi. 段落，短评；将...分段，分段落；写短讯；段落","Unit 5"],["paralyse/-yze","vt. 使麻痹，使瘫痪，使无力，使气馁，终止；使麻痹，使瘫痪","Unit 5"],["parallel","n.;adj.;vt. 平行，对比，相匹敌之物；平行的，相似的；与...平行，与...相似，相比，使平行；并联；并行","Unit 5"],["part","n.;vt.;vi.;adj.;adv. 部分，局部，零件，要素，等分，职责，角色，部位；分开，分离，断绝，区别，分配；分开，断裂，分手；部分的，局部的；部分地，有些","Unit 5"],["partial","adj.;n. 部分的，偏袒的，偏爱的；分音","Unit 5"],["participant","n.;adj. 参加者，参与者；有份的，参加的，参与的","Unit 5"],["participate","vi.;vt. 参加，分享，参与，带有；分享，分担","Unit 5"],["particle","n. 颗粒，粒子，质点，极小量；粒子；质点","Unit 5"],["particular","n.;adj. 一项(或条、点)，个别项目，详细说明；特别的，独有的，挑剔的，详尽的","Unit 5"],["partly","adv. 部分地，在一定程度上","Unit 5"],["partner","n.;vt.;vi. 合伙人，股东，伙伴，伴侣；与...合伙，组成一对；做伙伴，当助手","Unit 5"],["passion","n. 激情，酷爱，热爱，强烈感情，耶稣受难(故事)","Unit 5"],["passive","adj. 消极的，被动的，冷漠的，顺从的，无源的；被动的","Unit 5"],["quick","adj.;adv.;n. 快的，迅速的，敏捷的，灵敏的，急速的；快；新长出的肉，要害，核心，感觉敏锐部位","Unit 5"],["quit","vi.;vt.;n. 离开，辞职，停止；离开，放弃，使解除，停止；离开；结束，退出","Unit 5"],["questionnaire","n. 调查表，问卷；调查表","Unit 5"],["quote","n.;vt.;vi. 引用；引述，举证，报(价)","Unit 5"],["span","n.;vt. 指距，全长，跨距，一段时间，小范围；以手指测量，跨越，架设，持续","Unit 5"],["Spare","n.;adj.;vi.;vt. 剩余，备用品，备件，备用零件，备用轮胎；多余的，备用的，空闲的，节约的，瘦的；节约，省掉，宽恕；节约，省用，剩下，饶恕，赦免","Unit 5"],["schedule","n.;vt. 时间表，一览表，计划表，议事日程；预定，编制目录，制...表，安排","Unit 5"],["scheme","n.;v. 方案，计划，组合，系统，图解，诡计，阴谋；计划，设计，图谋，策划","Unit 5"],["science","n. 科学，学科，学问，自然科学；科学","Unit 5"],["Scientific","adj. 科学的，系统的，符合科学规律的；科学记数法","Unit 5"],["scientist","n. 科学家","Unit 5"],["pattern","n.;vt.;vi. 模范，典型，式样，样品，图案，格调，模式；模仿，仿造，以图案装饰；形成图案；模式，图案","Unit 6"],["pay","n.;vt.;vi. 薪资，付款，补偿；支付，付清，补偿，偿还，对...有利，为...涂防水物；付款，付出代价，偿还，得到报应，获得好处","Unit 6"],["payment","n. 付款，支付的款项(或实物)，偿还，报应，惩罚；支付，缴纳，支付款额","Unit 6"],["peculiar","adj.;n. 奇特的，罕见的，特殊的，特别的；特有财产，特权","Unit 6"],["peer","n.;vi.;vt. 同等的人，匹敌，贵族；凝视，窥视，费力地看，隐现；与...同等，封为贵族","Unit 6"],["per","prep. 每一，通过，经，按照；每，按照","Unit 6"],["perceive","vt. 感觉，认知，理解，意识到","Unit 6"],["percentage","n. 百分比，比率，部分，可能性；百分比","Unit 6"],["railroad/railway","n.;vt.;vi. 铁路，铁路公司；铺设铁路，用铁路运输；在铁路工作","Unit 6"],["raise","n.;vt. 上升，高地，增高；升起，举起，唤起，提高，使出现，使复活，提出，筹集，饲养","Unit 6"],["rally","n.;v. 重振旗鼓，集合，群众集会，跌停回升；重整旗鼓，集合，恢复精神，团结，挖苦，嘲笑","Unit 6"],["random","n.;adj.;adv. 随意，随机；任意的，随便的，胡乱的，随机的；胡乱地","Unit 6"],["range","n.;vt.;vi. 排，行，山脉，范围，行列，射程；排列，归类于，使并列，放牧；平行，延伸，漫游；量程；范围；域；距离","Unit 6"],["rank","n.;adj.;vt.;vi. 等级，排，横列，队伍，阶级；茂密丛生的，恶臭的，十足的，粗俗的；排列，归类于，把...分等；列为，列队；秩","Unit 6"],["masterpiece","n. 杰作，名著","Unit 6"],["mate","n.;vt.;vi. 配偶，对手，助手，(象棋)将死；使配对，使一致，结伴，(象棋)将死；成配偶，紧密配合","Unit 6"],["material","n.;adj. 材料，物资，素材，布料，资料；物质的，肉体的，重要的","Unit 6"],["mathematical","adj. 数学的，精确的；数学上的","Unit 6"],["mature","adj.;vt.;vi. 成熟的，到期的，充分考虑的；使成熟；成熟，到期","Unit 6"],["maximum","n.;adj. 极点，最大量，极大；最高的，最大的，最大极限的；最大值","Unit 6"],["meaning","n.;adj. 意义，含义，目的，意图；意味深长的","Unit 6"],["means","n. 方法，手段，工具，财产，收入；方法，手段，工具；意谓","Unit 6"],["meantime","n.;adv. 间隔时间，其时；其间","Unit 6"],["meanwhile","n.;adv. 其时，其间；同时，于此时","Unit 6"],["measure","n.;vt.;vi. 尺寸，量度器，量度标准，测量，量具，程度，范围，限度，分寸，措施，方法；测量，测度，估量，权衡，调节，拿(自己或自己的力量等)作较量；度量","Unit 6"],["opening","n.;adj. 开始，口子，穴，揭幕；开始的","Unit 6"],["opera","n. 歌剧","Unit 6"],["operate","v. 操作，运转，动手术，活动","Unit 6"],["operation","n. 操作，动作，手术，运算，作用，业务；运算","Unit 6"],["operational","adj. 操作的，运作的；操作上的，业务上的，可起作用的","Unit 6"],["operator","n. 操作员，行家，经纪人，算子，运算符；运算符","Unit 6"],["opinion","n. 意见，评价，主张；意见","Unit 6"],["opportunity","n. 机会，时机","Unit 6"],["opponent","n.;adj. 对手，敌手，反对者；敌对的，反对的，对面的","Unit 6"],["oppose","vt.;vi. 反对，以...对抗，抗争；反对","Unit 6"],["opposite","adj.;prep.;n. 相对的，相反的，对面的；对面；对立面","Unit 6"],["oppress","vt. 压迫，压抑，使烦恼","Unit 6"],["scope","n. 范围，机会，广度，眼界，观察仪器，导弹射程；作用域","Unit 6"],["score","n.;vt.;vi. 得分，抓痕，二十个，刻痕，帐目，乐谱，起跑线，终点线，大量；刻划，划线，获得，评价，把...记下；刻痕，记分，得分；得分","Unit 6"],["scorn","n.;vt. 轻蔑，藐视，嘲笑，被嘲弄的人；轻蔑，不屑做","Unit 6"],["secure","adj.;vt.;vi. 无虑的，安心的，安全的，可靠的，保险的；固定，获得，保证，使安全，掩护，招致；停止操作，船抛锚","Unit 6"],["security","n. 安全，安全性，防护物，保安，可靠性，担保人，抵押品，保证金；安全性，保密性，安全检查程序","Unit 6"],["See","vt.;vi.;n. 看见，查看，参观，游览，理解，知道，同意；看，观看，注意，知道，考虑；主教的职位","Unit 6"],["Seek","vt.;vi. 寻求，寻找，探索，追求，搜索，请求；寻找，搜索；查找","Unit 6"],["seem","vi. 象是，似乎","Unit 6"],["seemingly","adv. 看来似乎，表面上看来","Unit 6"],["thrift","n. 节约，茂盛，海石竹","Unit 6"],["thrive","vi. 繁荣，兴旺，茁壮成长；兴旺，繁荣，旺盛","Unit 6"],["through","adv.;prep.;adj. 穿越，从头至尾，到底，因为；经过，穿过；对穿的，直达的，完结的","Unit 6"],["throughout","adv.;prep. 到处，贯穿全部地，自始至终；遍及，在各处；吞吐量","Unit 6"],["tip","n.;vt.;vi. 顶，尖端，梢，末端，倾斜，垃圾场，小费，轻击，指点，秘密消息；装顶端，使倾斜，使翻倒，泄露，告诫，暗示，给...小费，轻击；倾斜，翻倒，倾覆，踮脚走，给小费；终端接口处理器，提示，技巧","Unit 6"],["title","n.;vt. 头衔，名称，标题，书名，扉页，权利，资格，冠军，字幕；授予头衔，加标题于；标题","Unit 6"],["urban","adj. 都市的，住在都市的，习惯于都市的；城市的，都市的，市区的","Unit 6"],["urge","n.;vt.;vi. 冲动，推动力，迫切的要求；驱策，力劝，竭力主张，推动；强烈要求","Unit 6"],["urgent","adj. 紧急的，急迫的，催逼的；紧急的，急迫的","Unit 6"],["utilize/-ise","vt. 利用","Unit 6"],["utter","adj.;vt. 全然的，绝对的，完全的；发出声音，做声，发表，发射，流通","Unit 6"],["worship","n.;vi.;vt. 崇拜，礼拜，尊敬；参加礼拜；崇拜，尊敬","Unit 6"],["worth","n.;adj. 价值，财产；值...的，值得的","Unit 6"],["worthwhile","adj. 值得花时间的，值得做的，有真实价值的","Unit 6"],["worthy","n.;adj. 杰出人物；有价值的，可敬的，值得的","Unit 6"],["write","vt.;vi. 书写，著述，写，写满，写信给；写，写字，写信，写作，作曲；书写器","Unit 6"],["writer","n. 作家，撰稿者，抄写员；记录器","Unit 6"],["tow","n.;vt. 拖，拖绳，拖轮；拖，拉，牵引","Unit 7"],["toward(s)","prep. 向，对于，为了","Unit 7"],["take","vt.;vi.;n. 拿，取，抓，带领，获得，就座，接受，吃，吸引，采取，乘，需要，花费；吃掉对方棋子，抓住，起作用，依法获得财产；拿，取，收成，奏效","Unit 7"],["talent","n. 天才，才能，有才干的人，天资","Unit 7"],["target","n.;vt. 目标，靶子，指标；对准，订指标","Unit 7"],["taste","n.;vt.;vi. 味道，品味，味觉，感受，体验，爱好，审美，少量；尝，察觉...的味道，体会；品尝，察觉味道，有某种味道","Unit 7"],["technical","adj. 技术上的，专门的，工业的，严格根据法律的；技巧","Unit 7"],["technician","n. 技师","Unit 7"],["technique","n. 技巧，技术，方法；工艺方法；技巧","Unit 7"],["technology/tech","n. 技术，工业技术，术语；技术学，工艺学","Unit 7"],["teenager","n. 十三岁到十九岁的少年","Unit 7"],["temper","n.;vt.;vi. (钢等的)硬度，脾气，心情，中和剂，倾向，回火；使回火，锻炼，调和，使缓和；回火","Unit 7"],["temperature","n. 温度，发烧，热度；温度","Unit 7"],["temporal","adj.;n. 时间的，暂时的，现世的，世俗的，颞的，太阳穴的；世间万物，教会财产","Unit 7"],["temporary","adj.;n. 暂时的，临时的；临时工，临时雇员；临时","Unit 7"],["tempt","vt. 诱惑，引诱，引起...的兴趣，吸引，冒...风险","Unit 7"],["temptation","n. 诱惑，诱惑物","Unit 7"],["tend","vi.;vt. 走向，有某种的倾向，易于，照顾，注意；照料，护理","Unit 7"],["tendency","n. 趋向，倾向；趋向，趋势","Unit 7"],["tentative","n.;adj. 试验；试验性的，暂时的","Unit 7"],["term","n.;vt. 术语，专有名词，期限，学期，任期，条件，价钱，关系，地位，项，界石；称，呼；检索词；项","Unit 7"],["terminate","adj.;vi.;vt. 有结尾的，(可)结束的；结束，终止，满期；使停止，使结束，使终止；终止","Unit 7"],["testify","v. 证明，作证，声明，表明","Unit 7"],["trace","n.;vt.;vi. 痕迹，踪迹，微量，迹线，缰绳；追踪，回溯，描绘；追溯，沿路走","Unit 7"],["track","n.;vt.;vi. 轨迹，足迹，径迹，小道，轨道，磁轨，途径；循路而行，追踪，通过，用纤拉；追踪，留下足迹，沿轨道运行；跟踪","Unit 7"],["tradition","n. 传说，传统，交付；传统，惯例，移交","Unit 7"],["ultimate","n.;adj. 终极，根本，顶点，基本原则；终极的，根本的，极限的，最远的，最后的，最大的","Unit 7"],["underestimate","n.;vt. 低估；低估，看轻","Unit 7"],["undergo","vt. 遭受，经历，忍受；经受，经历，忍受","Unit 7"],["underlie","vt. 位于...之下，成为...的基础","Unit 7"],["underlying","adj. 在下面的；优先的，基础的，放在下面的","Unit 7"],["underline","vt.;n. 在...下面划线，作...的衬里，强调；下划线，图下说明文字；加下划线；下划线","Unit 7"],["understand","vt.;vi. 理解，了解，领会，听说，懂；懂得，认为","Unit 7"],["understanding","n. 理解，谅解；协商，协议，谅解","Unit 7"],["undertake","vt. 试图，从事，保证，承担，同意，接受；承包；承担","Unit 7"],["uneasy","adj. 心神不安的，不自在的，不稳定的，不舒服的","Unit 7"],["unemployment","n. 失业，失业人数；失业","Unit 7"],["Unexpected","adj. 料想不到的，突然的，意外的；不能预料的，意外的","Unit 7"],["unify","v. 统一，使成一体","Unit 7"],["union","n. 联盟，联合，结合，工会；联合；联管节；活接头","Unit 7"],["unique","adj. 独一无二的，独特的，稀罕的","Unit 7"],["universal","adj.;n. 全世界的，普遍的，宇宙的，通用的；一般概念","Unit 7"],["universe","n. 宇宙，星系，(思想等)范围","Unit 7"],["unlike","adj.;prep. 不像的，不同的；不像，和...不同","Unit 7"],["unlikely","adj. 不太可能的","Unit 7"],["unusual","adj. 不寻常的，罕见的，与众不同的","Unit 7"],["vague","adj. 含糊的，不清楚的，茫然的","Unit 7"],["vain","adj. 无价值的，徒然的，空虚的，自负的，愚蠢的","Unit 7"],["valid","adj. 有确实根据的，有法律效力的，正当的，正确的；有效的","Unit 7"],["value","n.;vt. 价值，价格，购买力，评价，估价，计算结果；评价，估价，重视；计算结果","Unit 7"],["vanish","vi. 消失，不见，成为零","Unit 7"],["variable","n.;adj. 易变的事物，变数，可变物，变量；可变的，不定的，易变的，变量的；变量","Unit 7"],["variance","n. 不一致，变化，变异，分歧，不和；方差；变种","Unit 7"],["variation","n. 变更，变化，变种，变奏；变异，变易；变度","Unit 7"],["variety","n. 多样，种类，变种，杂耍；变种","Unit 7"],["various","adj. 不同的，各种的，多方面的，许多的，个别的，杂色的；不同的，种种的，各式各样的","Unit 7"],["vary","vt.;vi. 改变，使多样化；变化，有不同，违反","Unit 7"],["vast","adj. 巨大的，广大的，非常的，大量的","Unit 7"],["wage","n.;vt.;vi. 工资，报应，报偿；开展，进行；进行","Unit 7"],["wander","vi.;vt. 游荡，漫步，徘徊，迷路，离题，蜿蜒；在...漫游","Unit 7"],["want","n.;vt.;vi. 需要的东西，缺乏，贫困，需要；要，希望，应该，缺少；生活困苦，需要，缺少","Unit 7"],["way","n.;adv. 路，路线，路途，方法，道路，情形，规模，习惯，行业，方面；远远地，非常","Unit 7"],["weak","adj. 不牢固的，弱的，虚弱的，软弱的，无力的，无权力的，(论据等)不充分的；疲软的","Unit 7"],["Wear","n.;vt.;vi. 穿着，戴，使用，耗损，服装，耐久性；穿着，戴，留(须、发等)，呈现，磨损，磨成，耗损，使疲乏，消磨；磨损，变旧，耐久，渐变，渐渐消失","Unit 7"],["weary","adj.;vt.;vi. 疲倦的，萎靡的，厌倦的，厌烦的；使疲倦，使厌烦；疲乏，生厌，不耐烦","Unit 7"],["weigh","vt.;vi.;n. 称...重量，衡量，把...压弯，考虑，权衡，起锚；称分量，有意义，重压，起锚；过秤，称分量","Unit 7"],["weight","n.;vt. 重，重量，体重，砝码，重大，影响，力量；加重量于，压迫，使加权，称重量；粗细","Unit 7"],["weird","adj.;n. 怪异的，超自然的，不可思议的；命运，预言，符咒","Unit 7"],["welfare","n.;adj. 福利，安宁，幸福，福利事业；福利的","Unit 7"],["whirl","n.;vt.;vi. 回旋，旋转，急走，眩晕；使旋转，使回旋，卷走；回旋，旋转，急走，发晕","Unit 7"],["whisper","n.;vi.;vt. 耳语，密谈，谣传，沙沙声；耳语，密谈，沙沙地响；低声说","Unit 7"],["yield","n.;vt.;vi. 生产量，投资收益；出产，给予，让出，放弃，使屈服；出产，屈服，投降，倒塌","Unit 7"],["youth","n. 年轻，青年时代，青年们，青春；青年，青年时期，青春时期","Unit 7"],["zigzag","n.;adj.;adv.;vt.;vi. 曲折线条，Z字形道路；之字形的，曲折的，锯齿形的；之字形地，曲折地，成锯齿形地；使成之字形，使曲折进行；成之字形，弯曲地走路","Unit 7"],["zone","n.;vt.;vi. 地带，带，地区；环绕，使分成地带；分成区；卡片顶部的三行区；区；区域","Unit 7"],["zoom","n.;vi.;vt. 急速上升，变焦摄影，嗡嗡声；猛增，急速上升，摄象机移动；使摄象机移动；缩放","Unit 7"],["okey","adj. 好；行；对","Unit 7"],["knit","v. 编织，结合","Unit 7"],["brisk","adj.;vt.;vi. 强烈的，寒冷而干燥的，活泼的；使活泼；活跃起来","Unit 8"],["brief","n.;adj.;vt. 摘要，简报；简短的，短暂的；对...作简报，摘要，节录","Unit 8"],["browse","v.;n. 浏览，吃草；浏览","Unit 8"],["aggravate","vt. 使恶化，使更严重，加重","Unit 8"],["aggregate","n.;adj.;v. 合计，总计，聚集体；合计的，聚集的；聚集，集合，合计达；聚合体；聚集","Unit 8"],["aggressive","adj. 侵略的，挑畔的，进取的；侵略的，爱挑衅的，行为过火的","Unit 8"],["agitate","vt.;vi. 使摇动，搅动，使激动，使不安；鼓动，煽动","Unit 8"],["agreeable","adj. 令人愉快的，同意的；佳适的","Unit 8"],["aid","n.;vt.;vi. 帮助，外援，助手；援助，帮助，有助于；帮助；自动内部诊断","Unit 8"],["aim","n.;vi.;vt. 目标，瞄准，击中目标的能力；对准目标，致力，打算；瞄准；医学文摘索引，存取隔离机构，高级信息管理程序，先进接口模块；应用接口模块，医学人工智能，相联索引法，异步接口模块；自动化信息管理，自动化综合制造，自动化库存管理","Unit 8"],["alarm","n.;vt. 惊恐，警报，警钟；使惊恐，警告；报警信号","Unit 8"],["alien","n.;adj. 外国人，外侨；外国的，相异的","Unit 8"],["alienate","vt. 使疏远，离间，转让；转让，让与，疏远","Unit 8"],["allocate","vt. 分派，分配；分配","Unit 8"],["allow","vt.;vi. 允许，同意给予，承认；容许，猜想；允许命令","Unit 8"],["alter","v. 改变","Unit 8"],["alternative","n.;adj. 两者择一，供替代的选择；两者择一的，供选择的；选择对象","Unit 8"],["comparable","adj. 可比较的，比得上的","Unit 8"],["comparative","adj.;n. 比较的，相对的；对手","Unit 8"],["compare","vt.;vi.;n. 比较，比喻，对照；相比；比较","Unit 8"],["comparison","n. 比较，对照，比喻；比较，对比","Unit 8"],["compel","vt. 强迫，迫使","Unit 8"],["compensate","v. 偿还，补偿，付报酬","Unit 8"],["compete","vi. 竞争，对抗","Unit 8"],["competition","n. 竞争，竞赛；竞争，竞销，比赛","Unit 8"],["competitive","adj. 竞争的","Unit 8"],["competent","adj. 能干的，胜任的，有效的，足够的；有权的，授权的，胜任的","Unit 8"],["compile","vt. 编译，编辑，编纂，收集；编译","Unit 8"],["complain","v. 抱怨，抗议，控诉","Unit 8"],["complaint","n. 诉苦，抱怨，控诉；陈诉；病","Unit 8"],["complete","adj.;vt. 完全的，十足的，完成的；完成，完工，使圆满","Unit 8"],["complex","n.;adj. 综合体，情结，络合物；复杂的，组合的","Unit 8"],["complicate","vt.;vi. 弄复杂，使错综，使恶化；变复杂","Unit 8"],["complicated","adj. 复杂的；并发的","Unit 8"],["comply","vi. 顺从，依从；遵守，承诺，照做","Unit 8"],["differ","vi. 不一致，不同；差异，不同","Unit 8"],["difference","n. 不同，差异；差分","Unit 8"],["emphasis","n. 强调，加强，重点，强语气","Unit 8"],["emphasise/-ize","vt. 强调，重读，加强...的语气，着重","Unit 8"],["employ","n.;vt. 雇用；雇用，使用，使从事于","Unit 8"],["employee","n. 职员，员工，受雇人员；职工；雇员","Unit 8"],["employer","n. 雇主，老板；雇主，业主","Unit 8"],["employment","n. 雇用，职业，工作；职业，雇用，职工招请","Unit 8"],["enable","vt. 使能够；允许，使能，打开","Unit 8"],["encounter","n.;vt.;vi. 相会，相遇，遭遇；遇见，邂逅，会战；偶然相遇","Unit 8"],["encourage","vt. 鼓励，支持，激励；怂恿，煽动，助长","Unit 8"],["end","n.;v. 结束，终点，目标，末端，梢，死亡，残余；结束，终结，终止；端；结束","Unit 8"],["endeavour/endeavor","n.;vi. 努力，力图，尽力","Unit 8"],["endorse","vt. 支持，赞同，背书于，签署；赞成，背书","Unit 8"],["indicate","vt. 显示，象征，指示，指出；指示","Unit 8"],["indication","n. 指示，象征，暗示；指示，指征，适应征","Unit 8"],["indicative","adj. 指示的，象征的，表示...的；指标的","Unit 8"],["outrage","n.;vt. 暴行，侮辱，愤怒；凌辱，虐待，触犯","Unit 8"],["outset","n. 着手，开头，最初","Unit 8"],["outside","n.;adj.;adv. 外面，外表，外界；外面的，外表的，外界的","Unit 8"],["outward","adj.;adv. 向外的，表面的，外服的；向外，在外，表面","Unit 8"],["special","n.;adj. 专辑，专车，号外，特别的东西，负有特别任务的人员；特别的，专门的，特殊的，额外的，附加的，特别亲密的","Unit 8"],["Specialist","n.;adj. 专门医师，专家；专业的，专家的","Unit 8"],["specialize/-ise","vt.;vi. 使特殊化，列举，特别指明，限定...的范围；成为专家，专攻","Unit 8"],["special(i)ty","n. 专长，擅长，特种技能，详细说明，特性，特产，专业；特制品","Unit 8"],["Species","n. 种，类，外形；茶剂；种","Unit 8"],["specific","n.;adj. 特效药，特性；特殊的，明确的，具有特效的，特定地，具体地","Unit 8"],["Specification","n. 规格，详述，详细说明书；规范；形式说明；说明；说明书；规格","Unit 8"],["specify","vt. 详列，指定，说明；指定","Unit 8"],["speculate","vi. 深思，推测，投机；投机","Unit 8"],["accommodate","vt.;vi. 使适应，调和，通融，容纳，向...提供；适应","Unit 9"],["accommodation(s)","n. 膳宿；住房，住宿；居住设施（accommodation的复数）","Unit 9"],["accompany","vt.;vi. 陪伴，伴随，补充，为...伴奏；伴奏，伴唱","Unit 9"],["accomplish","vt. 完成，达到，实现，使完美","Unit 9"],["account","n.;vi.;vt. 报告，解释，估价，理由，利润，算账，帐目；报帐，解释，导致，报偿，占，杀死；认为；帐户，帐号","Unit 9"],["accountant","n. 会计人员，会计师；会计师，会计人员","Unit 9"],["bias","n.;adj.;adv.;vt. 偏见，斜纹；偏斜的；偏斜；使有偏见；偏流；偏压；偏磁；偏离","Unit 9"],["bid","n.;v. 出价；命令，吩咐，请求，表示，宣布，投标","Unit 9"],["bill","n.;vt. 帐单，清单，钞票，鸟嘴，广告，法案，票据；开帐单，(用招贴)宣布","Unit 9"],["billion","num. 十亿，十亿个","Unit 9"],["birth","n. 出生，起源；生产，分娩","Unit 9"],["charge","n.;vt.;vi. 指控，费用，冲锋，电荷，炸药，主管，被托管人，命令；控诉，加罪于，使充满，使充电，使承担；冲锋，要价，收费","Unit 9"],["charm","n.;vt.;vi. 吸引力，魔力，符咒；迷住，使陶醉，行魔法；用符咒，有魅力","Unit 9"],["chase","n.;vt.;vi. 追求，狩猎，追逐；追捕，追逐，雕刻，在...上镶嵌宝石；追赶，奔跑","Unit 9"],["demand","n.;v. 要求，需求，需要；要求，查询","Unit 9"],["democracy","n. 民主政治，民主主义；民主，民主政治，民主政体","Unit 9"],["democratic","adj. 民主的；民主的，民主政体的，平民的","Unit 9"],["demographic","adj. 人口统计的；人口统计的，人口学的","Unit 9"],["demonstrate","vt.;vi. 示范，证明；示威","Unit 9"],["denote","vt. 指示，表示","Unit 9"],["denial","n. 否认；否定，否认，拒绝接受","Unit 9"],["deny","v. 否认，拒绝","Unit 9"],["department","n. 部门，系，机关；部，科","Unit 9"],["depend","vi. 靠，视...而定，信赖","Unit 9"],["dependent","n.;adj. 依赖他人者；依赖的，从属的","Unit 9"],["deposit","n.;vt.;vi. 存款，定金，堆积物；存放，堆积；沉淀","Unit 9"],["depress","vt. 使沮丧，压低，降低，使萧条；推下","Unit 9"],["merge","vt.;vi. 使合并，使消失，吞没；合并，渐渐消失；合并","Unit 9"],["emergency","n. 紧急状况，紧急事件，紧急需要；紧急情况","Unit 9"],["eminent","adj. 显赫的，杰出的，有名的","Unit 9"],["motion","n.;v. 移动，手势，动作，意向，请求，提议；打手势","Unit 9"],["fearful","adj. 可怕的，恐怕的，担心的","Unit 9"],["feature","n.;vt.;vi. 面孔的一部分(如眼、口等)，特征，容貌，特色，特写；是...的特色，特写，放映；起重要作用；特性","Unit 9"],["federal","adj. 联邦的，联合的，同盟的；联邦的，联邦制的，联盟的","Unit 9"],["federation","n. 联邦，联合，联盟；联邦，联盟，联邦政府","Unit 9"],["feed","n.;vt.;vi. 饲料，一餐，饲养；喂，饲养，放牧，靠...为生；吃东西，用餐，流入；送纸","Unit 9"],["feedback","n. 反馈，反应；反馈","Unit 9"],["fertile","adj. 可繁殖的，肥沃的，生产多的；能生育的","Unit 9"],["goal","n.;vi. 目标，终点，得分，球门，守门员；攻门，射门得分","Unit 9"],["goods","n. 货物；货物，商品，动产","Unit 9"],["govern","v. 统治，支配，管理","Unit 9"],["government","n. 政府，内阁；政府，政治，政体","Unit 9"],["governor","n. (美)州长，(英)总督，统治者，管理者，理事；节制器，调节器","Unit 9"],["gradual","adj.;n. 逐渐的，渐增的；弥撒升阶圣歌","Unit 9"],["graduate","n.;adj.;vi.;vt. 毕业生，量杯；已得学位的，研究生的，毕业的；毕业，得学位，逐渐变为；准予...毕业，授予...学位，分等级，刻刻度","Unit 9"],["grand","adj. 庄重的，壮观的，显赫的，重大的，最高的，雄伟的，宏大的，豪华的，傲慢的；重大的，主要的，伟大的","Unit 9"],["grant","n.;vt. 授予，授予物，允许；允许，承认，授与；授权命令","Unit 9"],["heap","n.;vt. 堆，许多，累积；堆积，装满；堆","Unit 9"],["heal","vi.;vt. 痊愈；使复原，使和解，治愈","Unit 9"],["health","n. 健康，卫生，蓬勃，健康状态；健康","Unit 9"],["healthy","adj. 健康的，有益健康的，卫生的；健康的","Unit 9"],["hesitate","vi. 犹豫，迟疑，踌躇，支吾，停顿","Unit 9"],["highlight","n.;vt. 加亮区，精彩场面；加亮，使显著，以强光照射，突出；突出","Unit 9"],["immense","adj. 极广大的，无边的，非常好的","Unit 9"],["immerse","vt. 沉浸，使陷入；浸[入]","Unit 9"],["immigrant","n.;adj. 移民；移入的，移民的","Unit 9"],["imminent","adj. 即将来临的，逼近的","Unit 9"],["immune","adj.;n. 免疫的，免除的，不受影响的；免疫者","Unit 9"],["likely","adj.;adv. 有可能的，合适的，前途有望的；或许，可能","Unit 9"],["likelihood","n. 可能，可能性","Unit 9"],["likewise","adv. 同样地，也","Unit 9"],["self","n.;vt.;vi.;adj. 自己，自我，本性，本质，私心，本人；使近亲繁殖，使自花授精；自花授精；同一的","Unit 9"],["selfish","adj. 自私的，利己主义的，自我中心的","Unit 9"],["wise","adj.;vi.;vt.;n. 明智的，慎虑的，聪明的，博学的，狡猾的，机灵的；知道；教导，告诉，劝导；方法，方式；教育信息系统","Unit 10"],["choke","vt.;vi.;n. 窒息，阻塞，噎，抑制；窒息，阻塞，噎；窒息，噎，阻气门","Unit 10"],["chop","n.;vt.;vi. 肋条肉，排骨，砍，戳记，商标；剁碎，砍，切击，割断；砍，突然转向","Unit 10"],["circumstance","n. 环境，状况，事件","Unit 10"],["cite","vt. 引用，引证，表彰；引证，指引","Unit 10"],["claim","n.;vt.;vi. 要求，要求权，断言，权利；要求，认领，主张；提出要求，主张，断言","Unit 10"],["clear","adj.;adv.;vt.;vi.;n. 清楚的，明确的，澄清的；清晰地；澄清，清除障碍；放晴，变清澈；空隙；清除","Unit 10"],["border","n.;vt.;vi. 边缘，边境，边界，花坛；在...上镶边，接近；接界，近似；边框","Unit 10"],["bore","n.;vt.;vi. 令人讨厌的人，激浪，枪膛，孔；使烦扰，钻孔；钻孔；bear的过去式；内径；孔径","Unit 10"],["born","adj. 天生的；bear的过去分词","Unit 10"],["bother","vt.;vi.;n. 烦扰，迷惑；烦恼，操心；麻烦，纠纷，讨厌的人","Unit 10"],["acquire","vt. 获得，学到；目标锁定","Unit 10"],["acquisition","n. 获得，获得物；收购，招揽，取得","Unit 10"],["act","n.;vi.;vt. 行动，行为，幕，法案；行动，表演，假装，见效，表现，担当；扮演，装作；先进通信技术，先进计算机工艺，自动代码翻译技术","Unit 10"],["action","n.;vt. 行动，活动，动作，作用，战斗，行为，诉讼；对...起诉；方式","Unit 10"],["activate","vt.;vi. 使活动，使激活，正式建成；有活力","Unit 10"],["active","adj.;n. 活跃的，起作用的，积极的，有效的，主动的，活性的，现行的，现役的；主动语态，积极分子","Unit 10"],["activity","n. 活动，行动，活跃，活力；活动","Unit 10"],["actual","adj. 真实的，实际的，现行的；实际死亡率","Unit 10"],["acute","adj. 尖锐的，敏锐的，激烈的，严重的，急性的；急性的；尖锐的","Unit 10"],["despise","vt. 轻视","Unit 10"],["despite","n.;prep. 轻视，憎恨；虽然，尽管","Unit 10"],["energetic","adj. 精力充沛的，积极的","Unit 10"],["energy","n. 精力，精神，活力，能量；能；能量","Unit 10"],["enforce","vt. 强迫，执行，坚持；予以强制执行","Unit 10"],["engage","vi.;vt. 答应，从事，交战；使忙碌，雇佣，预定，使从事于，使参加","Unit 10"],["engagement","n. 诺言，约会，婚约，交战；衔接","Unit 10"],["fold","n.;vt.;vi. 折层，折，羊栏，折痕，信徒；折叠，包，合拢，交迭；折叠起来，彻底失败；折叠；合并","Unit 10"],["folk","n.;adj. 人们，家人，亲属，民族；民间的","Unit 10"],["follow","vt.;vi.;n. 跟随，沿行，遵循，追求；跟随，接着；跟随，追随","Unit 10"],["following","n.;adj. 下列各项，部下，追随者；下列的，其次的","Unit 10"],["force","n.;vt. 力量，武力，势力，影响力，军队，力，效力；强迫，强夺，推动，提高；人工转移；强制","Unit 10"],["fore","adj.;adv.;prep. 在前的，以前的；在前面，在船头；在...前","Unit 10"],["forecast","n.;vt. 预想，预测，预报；趋势预测","Unit 10"],["foresee","vt. 预见，预知","Unit 10"],["forge","n.;vt.;vi. 熔炉，铁工厂；打制，锻造，伪造；锻造，伪造","Unit 10"],["grim","adj. 冷酷的，坚强的，残忍的，可怕的，讨厌的","Unit 10"],["grasp","n.;vt.;vi. 把握，抓紧，理解，抓，柄，控制；抓住，紧握，领会；抓","Unit 10"],["grip","n.;vt.;vi. 紧握，柄，握力，握手方式，手提包，掌握，支配，控制；抓紧，抱住，吸住，掌握；握牢，有吸引力","Unit 10"],["gross","n.;adj.;vt. 总数，总量；总共的，未打折扣的，恶劣的，粗野的；总共收入","Unit 10"],["ground","n.;adj.;vt.;vi. 土地，战场，场地，地面，范围；土地的，地面上的；放在地上，使搁浅，打基础，给...以训练；搁浅，落地，根据，基于；磨过的；grind的过去式和过去分词","Unit 10"],["group","n.;v. 团体，组，团，群；聚合，成群；创建组；组，用户组","Unit 10"],["guarantee","n.;vt. 担保，抵押品，保证书；保证，担保","Unit 10"],["guard","n.;vt.;vi. 守卫者，警戒，护卫队，防护装置；保卫，看守，当心；防止，警惕，警卫，看守","Unit 10"],["include","vt. 包括，把...算入，包住；DOS内部命令:在CONFIG.SYS文件的一个配置块中包含另一配置块的内容","Unit 10"],["inclusive","adj. 包含的，包括的","Unit 10"],["income","n. 收入，收益，流入；收益","Unit 10"],["incorporate","adj.;vt.;vi. 合并的，组成公司的，一体化的；吸收，合并，使组成公司，体现；合并，混合，组成公司","Unit 10"],["increasingly","adv. 逐渐地，渐增地","Unit 10"],["incredible","adj. 难以置信的","Unit 10"],["incur","vt. 招致，蒙受，遭遇；招致，蒙受，担负","Unit 10"],["link","n.;vt.;vi. 环，连结物，链接，火把；连结，联合，挽住；连接起来；连接，链路","Unit 10"],["list","n.;vt.;vi. 目录，名单，明细表，布条，条纹，列表，序列，数据清单；列出，列于表上，记入名单内，装布条；列于表上；列表，序列，数据清单","Unit 10"],["literally","adv. 逐字地，按照字面上地，不夸张地","Unit 10"],["literary","adj. 文学的，文艺的，精通文学的；文学的，从事文学的，从事写作的","Unit 10"],["literature","n. 文学，文艺，著作；广告，商品介绍等文学","Unit 10"],["memo/memorandum","n. 备忘录","Unit 10"],["memorial","n.;adj. 纪念物，请愿书；记念的，记忆的","Unit 10"],["memory","n. 记忆，记忆力，回忆，纪念，存储；内存；存储器，内存，查看内存实用程序","Unit 10"],["mental","adj.;n. 心智的，精神病的，心理的，颏的；精神病患者","Unit 10"],["mention","n.;vt. 提到，言及，陈述；提到，提及","Unit 10"],["mentor","n. 指导者，良师益友","Unit 10"],["other","adj.;pron. 其他的，另外的，从前的；其他的，他人，另外一个","Unit 10"],["otherwise","adv. 否则，不同地，别的方式","Unit 10"],["outcome","n. 结果，出口","Unit 10"],["sign","n.;vt.;vi. 符号，招牌，征兆，正负号，手势；签名，打手势表达；签名；正负号；符号；符号字符","Unit 10"],["signature","n. 签字，识别标志，调号；签名附件","Unit 10"],["signal","n.;vt.;vi.;adj. 信号，暗号，近因，导火线；向...作信号，标志，用信号通知；发信号；作为信号的，显著的；信号","Unit 10"],["Significance","n. 重要性，意义，意味；有效；有效性","Unit 10"],["significant","adj. 重要的，有效的，有含义的，暗示的，值得注意的","Unit 10"],["signify","vt.;vi. 象征，预示；要紧，重要","Unit 10"],["similar","adj.;n. 相似的，类似的；相似的东西","Unit 10"],["simple","adj.;n. 简单的，普通的，朴素的，单纯的，绝对的，初级的，原始的，迟钝的；出身低微者，傻子","Unit 10"],["simplicity","n. 单纯，简朴，朴素，坦率，天真；简明性","Unit 10"],["simplify","vt. 单一化，简单化","Unit 10"],["slack","n.;adj.;adv.;vt.;vi. 松弛，松懈，淡季，闲散，家常裤；松弛的，不流畅的，疏忽的，无力的，呆滞的，软弱的，漏水的；马虎地，缓慢地；放松，使缓慢；松懈，减弱，松弛","Unit 10"],["addict","vt.;n. 使沉溺，使上瘾；入迷的人，上瘾者","Unit 11"],["add","vt.;vi. 增加，添加，附带说明，计算...总和；做加法，积累而成，增添；加法","Unit 11"],["addition","n. 加法，增加的人(或物)；加法","Unit 11"],["additional","adj. 附加的，另外的，额外的；加添的，附加的","Unit 11"],["address","n.;vt. 住址，演说，举止，灵巧，求爱；发表(演说或讲话)，对付，写地址；地址，寻址","Unit 11"],["adequate","adj. 适当的，足够的；胜任的，适当的，充分的","Unit 11"],["adjust","vt.;vi. 调整，使适应于，校准；适应于，被调节，相互熟悉而适应","Unit 11"],["administration","n. 行政，管理，政府机关；给药","Unit 11"],["admire","vt.;vi. 赞美，钦佩，爱慕；称赞，惊奇","Unit 11"],["admission","n. 准许进入，入场费，录用，承认；加入，入股","Unit 11"],["admit","vt.;vi. 承认，接受，允许进入，容许；开向，容许，承认","Unit 11"],["adapt","vt.;vi. 使适应，改编；适应","Unit 11"],["adopt","vt. 采用，正式通过，收养，接受；采取","Unit 11"],["adult","n.;adj. 成人，成虫；成年的，成熟的","Unit 11"],["brace","n.;vt.;vi. 支柱，曲柄，支撑，一对；紧缚，支撑，激励；打起精神；花括号","Unit 11"],["brain","n.;vt. 脑；打碎脑部","Unit 11"],["branch","n.;vi.;vt. 树枝，支店，支流，分部；分支，出枝；分割，用枝状叶脉刺绣花纹装饰；分支，目录分支","Unit 11"],["brand","n.;vt. 商标，牌子，烙印；打烙印于","Unit 11"],["toss","n.;vt.;vi. 投掷，抛，摇摆，震荡，掷钱币决定；投掷，猛抬，摇荡，使不安，掷钱币决定；被到处扔，摇摆，颠簸，辗转，掷钱币决定某事","Unit 11"],["total","adj.;vt.;vi.;n.;adv. 全体的，总的，全然的；计算...的总和，共计为；合计；总数，全体，合计；统统","Unit 11"],["touch","n.;vt.;vi. 触觉，碰，触，机灵，轻触，格调，少许，缺点，弹力；接触，触摸，触及，使接触，达到，涉及，影响到，使轻度受害，感动；触摸，接近，涉及，提到","Unit 11"],["tough","n.;adj. 恶棍；强硬的，艰苦的，坚固的，坚韧的，粗暴的，咬不动的","Unit 11"],["treat","n.;vt.;vi. 宴请，款待；视为，对待，论述，治疗，款待；讨论，谈判，作东","Unit 11"],["treaty","n. 条约，谈判；协议，协定，协商","Unit 11"],["trend","n.;vi. 趋势，倾向，走向；倾向，转向；趋势","Unit 11"],["vice","n.;vt.;prep. 恶习，恶行，罪恶，堕落，缺陷，恶癖，老虎钳；钳住；代替","Unit 11"],["vicious","adj. 邪恶的，堕落的，品性不端的，恶毒的，恶性的，有错误的；缺点的，恶的","Unit 11"],["victim","n. 受害人，牺牲者，牺牲品；受害人，被害人，遭难者","Unit 11"],["client","n. 客户，顾客，委托人；客户，客户机，客户机程序","Unit 11"],["cling","vi. 粘紧，附着，紧贴，坚持","Unit 11"],["close","n.;adj.;vt.;vi.;adv. 结束，完结；靠近的，亲近的，亲密的，严密的，关闭的，狭窄的，秘密的；关，结束，使靠近，封闭，使接近；关闭，结束，靠近；接近地，紧密地；关闭","Unit 11"],["closet","n.;adj.;vt. 壁橱，小室；秘密的，空谈的；把...关入小室","Unit 11"],["code","n.;vt. 代码，密码，法规，法典；把...编码；代码","Unit 11"],["personal","adj. 私人的，涉及隐私的，有人性的，人称的，亲自的，身体的；人的；个人的，自身的","Unit 11"],["personality","n. 个性，人格，(团体、地方、国家)特有特性，名人；人格；个性","Unit 11"],["personnel","n. 人员，人事部门，人事科(处)；人事，全体人员，职工","Unit 11"],["form","n.;v. 形状，形体，类型，方式，表格，形式；形成，排列，(使)组成；表单","Unit 11"],["formal","adj.;n. 正式的，形式的，礼仪的，拘于礼节的，拘谨的；正式的社交活动","Unit 11"],["format","n.;vt. 开本，版式，形式，格式；格式化；格式；DOS外部命令:对磁盘进行格式化","Unit 11"],["formation","n. 形成，构造，编队；形成，结构","Unit 11"],["former","adj.;n. 从前的，前者的；起形成作用的人(或物)，模型，样板","Unit 11"],["formidable","adj. 巨大的，优秀的，可怕的，艰难的","Unit 11"],["formula","n. 客套语，公式，准则；公式","Unit 11"],["formulate","vt. 用公式表示，明确叙述，制订；公式化，公式表示","Unit 11"],["fortunate","adj. 幸运的，幸福的","Unit 11"],["fortune","n. 财富，运气，兴隆，大量财产，好运，命运；命运，财产，大量财产","Unit 11"],["guide","n.;vt.;vi. 引导者，导游，指南，路标；指导，支配，管理，带领，操纵；任向导；辅助线","Unit 11"],["guidance","n. 指导，领导；导","Unit 11"],["guideline","n. 指导路线，方针，指标；指导路线，方针，准则","Unit 11"],["guild","n. 团体，协会，行业协会；同业公会","Unit 11"],["guilt","n. 罪行，内疚；罪，犯罪，罪行","Unit 11"],["guilty","adj. 犯罪的，有过失的，自觉有错的，心虚的；有罪的，犯罪的，自觉有罪的","Unit 11"],["recognition","n. 赞誉，认得，识别，承认，认可，认识；认识","Unit 11"],["recognize/-ise","vt.;vi. 认出，认可，承认，公认，识别，赏识；承认，具结","Unit 11"],["recommend","vt. 推荐，介绍，劝告，使受欢迎，托付；建议，推荐","Unit 11"],["recover","vt.;vi. 重新获得，恢复，复原，拯救；痊愈，复原，胜诉；恢复","Unit 11"],["recovery","n. 恢复，复原，痊愈，重获；恢复","Unit 11"],["recruit","n.;vt.;vi. 新兵，新手，新会员，补给品；恢复，补充，充实，征募；征募新兵，复原，得到补充","Unit 11"],["sell","vt.;vi.;n. 卖，背叛，销售，出卖；卖，销售；卖，推销术，失望","Unit 11"],["send","vt.;vi.;n. 发送，使进入，寄，派遣，发射，使陷于；寄信，派人，播送；(船的)上升运动；发送","Unit 11"],["Senior","n.;adj. 年长者，资深者，毕业班学生；年长的，高级的，资深的","Unit 11"],["Smart","adj.;n.;vi. 聪明的，漂亮的，刺痛的，剧烈的，敏捷的，巧妙的，伶俐的，潇洒的；刺痛，痛苦；刺痛","Unit 11"],["smell","n.;vt.;vi. 味道，气味，嗅觉，嗅，臭味，气息；闻，探出，察觉，发出...的气味；嗅，散发气味，发臭","Unit 11"],["soak","n.;vt.;vi. 浸，湿透，大雨；使上下湿透，浸，吸入，吸收，浸洗掉；浸泡，渗透","Unit 11"],["soar","n.;vi. 高扬，翱翔；往上飞舞，高耸，翱翔","Unit 11"],["sociable","adj.;n. 好交际的，社交的，过社会生活的；联谊会","Unit 11"],["Social","adj.;n. 社会的，群居的，社交的；联欢会","Unit 11"],["socialism","n. 社会主义，社会主义运动","Unit 11"],["Society","n. 社会；社交界；交往；社团","Unit 11"],["sociology","n. 社会学","Unit 11"],["soluble","adj. 溶解的，可溶解的，可以解决的；溶解的，可溶的","Unit 11"],["solution","n. 解决，解答，溶液；溶液","Unit 11"],["Solve","vt.;vi. 解决，付给，溶解；求解","Unit 11"],["detach","vt. 使分离，分遣；摘下，分离，卸下","Unit 11"],["detail","n.;vt.;vi. 细节，详情；详述，选派；画详图；详细数据","Unit 11"],["detain","vt. 扣留，扣押，耽搁；拘留，扣押，留住","Unit 11"],["shadow","n.;vt.;vi. 阴影，荫，影子，影像，阴暗，幽灵，少许，隐蔽处，庇护；遮蔽，使朦胧，预示，尾随；渐变，变阴暗；阴影","Unit 12"],["shade","n.;vi.;vt. 荫，阴暗，遮光物，灯罩，帘，浓淡，微量，底纹；渐变；使阴暗，使渐变，遮蔽，微减；底纹","Unit 12"],["sort","n.;vt.;vi. 种类，方式，品质，态度，举止；分类，排序，挑选；交往，协调；排序；DOS外部命令:从标准输入设备接收数据，整个数据输入完后；对它以行为单位进行排序，然后在标准输出设备上输出","Unit 12"],["soul","n.;adj. 灵魂，心灵，精神，精髓，人，化身，典型，鬼魂；黑人的","Unit 12"],["Sound","n.;adj.;adv.;vi.;vt. 声音，语音，吵闹，声调，听力范围，探条，海峡；健全的，可靠的，合理的，健康的，彻底的，资金充实的；彻底地，充分地；发出声音，回响，测深，试探，听起来；使发声，宣告，听诊，测...深，试探；声音","Unit 12"],["sour","adj.;vi.;vt.;n. 酸的，酸臭的，发酵的，愠怒的，讨厌的，拙劣的，不健全的；变酸，发酵，厌烦，变坏；使变酸，使失望；酸味，酸饮料","Unit 12"],["source","n. 来源，水源，根源，原始资料，源；来源，源程序","Unit 12"],["advance","n.;vi.;vt.;adj. 前进，进展，行过的路程；前进，进展，提高，上涨；使前进，促进，提出，提高，使提前，预付；前面的，预先的","Unit 12"],["advanced","adj. 在前的，高级的，先进的，年老的；预付的，预支的，垫付的","Unit 12"],["advantage","n.;vt. 优点，便利，好处，优势；有助于","Unit 12"],["advice","n. 忠告，劝告，意见，报道，通知；通知书，通知，建议","Unit 12"],["advise","vt.;vi. 劝告，给...出主意，通知，建议；提意见，商量","Unit 12"],["advisable","adj. 适当的，明智的","Unit 12"],["aesthetic/esthetic","adj. 美学的，审美的，有美感的","Unit 12"],["affair","n. 事件，事务，恋爱事件","Unit 12"],["affect","vt.;n. 影响，感动，假装，模仿，爱好，倾向于；自觉感情","Unit 12"],["affection","n. 影响，病，喜爱，情感，倾向；疾患，病变，病；感情","Unit 12"],["affiliate","vt.;vi. 使紧密联系，使附属，接纳，收养；发生联系，参加","Unit 12"],["affirm","v. 断言，确认","Unit 12"],["afford","vt. 买得起，足以，给予","Unit 12"],["breach","n.;vt.;vi. 裂口，违背，破坏，违反，突破，破裂；攻破，突破；跳出水面","Unit 12"],["break","n.;vt.;vi. 休息，中断，破裂处，绝交，破晓，突变；打破，弄破，弄坏，破坏，违反，打断，削弱，放弃；破碎，决裂，破晓，突变，变弱，暂停；分隔符；分隔符；中断；DOS内部命令:设定扫描中断按键的时机","Unit 12"],["breakdown","n. 崩溃，故障；事故；击穿","Unit 12"],["breed","n.;v. 种类，品种；养育，引起，饲养，繁殖","Unit 12"],["brevity","n. 短暂，简短","Unit 12"],["coincide","vi. 一致，符合；重合","Unit 12"],["collapse","n.;vi.;vt. 崩溃，倒塌，虚脱；倒塌，崩溃，瓦解；使倒塌，折叠；折叠","Unit 12"],["colleague","n. 同事，同僚","Unit 12"],["collect","v.;adj.;adv. 收集，聚集，集中，搜集；由收到者付款的；由收到者付款地","Unit 12"],["collection","n. 收集，采集，(一批)收藏品，募捐；收集；收集品，标本","Unit 12"],["collective","adj. 集体的，聚集的，共同的；集体的，集合的","Unit 12"],["collide","vi. 碰撞，互撞，抵触","Unit 12"],["column","n. 专栏，圆柱，纵队，列，柱形物；列，柱形图","Unit 12"],["combat","n.;vi.;vt. 争斗，战斗；战斗，争斗；与...战斗，与...斗争","Unit 12"],["combine","v.;n. (使)联合，(使)结合；(企业的)联合，联合收割机","Unit 12"],["command","n.;v. 命令，指挥，控制，部队，司令部；命令，指挥，控制；命令；指令；DOS外部命令:启动新的命令处理器","Unit 12"],["commend","vt. 嘉奖，委托给，推荐","Unit 12"],["comment","n.;vi. 注解，批评，评论，备注；评论，注解；备注","Unit 12"],["commerce","n. 商业，商务，贸易；商业，贸易，商务","Unit 12"],["commercial","adj.;n. 商业的，商用的，商品化的；商业广告节目","Unit 12"],["commission","n.;vt. 委任状，任官令，所委职责，佣金，犯，委托，所托之事；委任，委托制作，使服役","Unit 12"],["commit","vt. 委托(托付)，犯罪，指派...作战，使承担义务；犯，做，把...交托给","Unit 12"],["committee","n. 委员会","Unit 12"],["commodity","n. 农产品，商品，有用的物品；商品，货物，日用品","Unit 12"],["common","adj. 通常的，共同的，通俗的，公共的；公用块","Unit 12"],["communicate","vt.;vi. 显露，传达，感染；通讯","Unit 12"],["communication","n. 交流，交通，通讯；通信","Unit 12"],["communism","n. 共产主义","Unit 12"],["community","n. 社区，公众，共有，共同体；公众，共有，社会","Unit 12"],["deter","vt. 制止，吓住，威慑","Unit 12"],["deteriorate","v. (使)恶化","Unit 12"],["determine","v. 决定，决心","Unit 12"],["develop","vt.;vi. 发展，使发达，进步，洗印，显影；发展，生长","Unit 12"],["device","n. 装置，设计，策略，发明物，设备；设备；DOS内部命令:该命令要求DOS安装一个设备驱动程序","Unit 12"],["devise","vt.;n. 设计，发明，图谋，遗赠给；遗赠","Unit 12"],["ensure","vt. 确定，保证，担保，保护；确保，确定","Unit 12"],["indeed","adv. 的确，实在，真正地，甚至","Unit 12"],["independence","n. 独立，自立，自主；自主性，独立性","Unit 12"],["independent","n.;adj. 独立自主者，无党派者；独立的，有主见的，不须依赖的，不受约束的","Unit 12"],["index","n.;vt.;vi. 索引，指针，指数，指标；编入索引中，指出；做索引；下标；附标；变址；索引；编索引","Unit 12"],["mere","n.;adj. 小湖，池塘；仅仅的，只不过的","Unit 12"],["merely","adv. 只","Unit 12"],["plea","n. 恳求，辩解，抗辩，诉讼，请愿，托词；抗辩，申诉案件，答辩","Unit 12"],["plead","vi.;vt. 辩护，恳求；为...辩护，提出...借口，托称，恳求","Unit 12"],["plot","n.;vt.;vi. 小块土地，地区图，图，阴谋，情节；划分，绘图，密谋；密谋，策划；绘制","Unit 12"],["policy","n. 政策，方针，策略，保险单；凭单，保险单","Unit 12"],["polite","adj. 有礼貌的，文雅的，客气的，有教养的","Unit 12"],["political","adj. 政治的，政治上的，政党的，从事政治的；政治的，政治上的，党派政治的","Unit 12"],["politician","n. 政客，政治家，从事党派政治的人；政客，政治家","Unit 12"],["politics","n. 政治，政治学，政见，政治活动；政治，政治学，政纲","Unit 12"],["poll","n.;vt.;vi.;adj. 投票，民意测验，选举投票，投票数，一组人中的一个，头颈和后脑部，鹦鹉；对...进行民意测验，获得...票，剪树枝，轮询；投票；剪过毛的，修过枝的；轮询","Unit 12"],["ponder","v. 沉思，考虑","Unit 12"],["beam","n.;vi.;vt. 横梁，杆，光线，容光焕发；用梁支承，微笑，射出光线；照耀，感到欣喜；束","Unit 13"],["become","vi.;vt. 变成，变得；适合","Unit 13"],["derive","vt.;vi. 得自；起源","Unit 13"],["describe","vt. 描述，描绘，画","Unit 13"],["description","n. 描述，说明，种类；说明书(物品)，品名种类，货物名称","Unit 13"],["deserve","vt.;vi. 该得到，值得；应得报答","Unit 13"],["design","n.;v. 设计，图样，方案，企图；设计，计划","Unit 13"],["designate","vt.;adj. 指定，指明，称呼；已选出而未上任的","Unit 13"],["desirable","adj. 令人想望的，可取的","Unit 13"],["desire","n.;vt.;vi. 欲望，要求；想要，请求；渴望","Unit 13"],["flaw","n. 缺点，裂纹，瑕疵，一阵狂风；划痕；裂缝；裂纹","Unit 13"],["flexible","adj. 易曲的，灵活的，柔顺的，能变形的，可通融的；能屈的","Unit 13"],["fling","n.;vt.;vi. 投掷，急冲，嘲弄；投，丢下，抛弃，使陷入，挥动，嘲笑，扫视；猛冲","Unit 13"],["flourish","vi.;vt.;n. 繁荣，茂盛，活跃，手舞足蹈；挥舞，夸耀；挥舞，炫耀，茂盛，兴旺，华丽词藻","Unit 13"],["grow","vt.;vi. 种植，使长满；生长，变成，发展","Unit 13"],["growth","n. 生长，栽培，增长；等比级数","Unit 13"],["hinder","adj.;v. 后面的；阻碍，打扰","Unit 13"],["hitherto","adv. 迄今，至今","Unit 13"],["impact","n.;vt. 冲击，冲突，影响，效果；挤入，撞击，压紧，对...发生影响","Unit 13"],["impair","vt. 损害，减少，削弱；损害，伤害，减少","Unit 13"],["impart","vt. 给予，传授，告知","Unit 13"],["implication","n. 牵连，含义，暗示；推断，含蓄之意，暗示","Unit 13"],["implicit","adj. 暗示的，含蓄的，固有的，绝对的；不讲明的，含蓄的","Unit 13"],["imply","vt. 暗示，意味；隐含","Unit 13"],["importance","n. 重要，重要性，重要地位，自大；重要，重要性","Unit 13"],["important","adj. 重要的，有地位的，大量的，显要的，自负的；要点","Unit 13"],["impose","vt.;vi. 征(税)，把...强加于，以...欺骗；利用，欺骗，施加影响","Unit 13"],["impress","n.;vt.;vi. 印象，特征，印记；使有印象，印，铭刻，传送，影响，强征；给人印象","Unit 13"],["impressive","adj. 给人深刻印象的，威严的","Unit 13"],["improve","vt.;vi. 改良，提高...的价值，改善，利用；变得更好，增加","Unit 13"],["impulse","n.;vt. 冲动，驱使，刺激，推动，冲力，建议，脉冲；推动","Unit 13"],["limit","n.;vt. 界限，边界，限度，极限，限制；限制，限定","Unit 13"],["limitation","n. 限制，缺陷，限额；限界，限制，限度","Unit 13"],["limited","adj.;n. 有限制的，有限的，有限责任的；特别快车","Unit 13"],["original","adj.;n. 最初的，原始的，有创意的；原物，原作","Unit 13"],["originate","vt.;vi. 创始，发明，发起；发源，发生，起航；发自","Unit 13"],["petition","n.;v. 请愿，诉状，陈情书，申请，祈求，祷文；正式请求，恳求，请愿","Unit 13"],["phase","n.;vt. 时期，局面，方面，位相，相，阶段；使调整相位，使定相，使一致，逐步执行，实行；阶段","Unit 13"],["phenomenon","n. 现象，迹象，表现，奇迹，奇才；现象","Unit 13"],["philosopher","n. 哲学家，哲人，思想开创人，达观的人；哲学家，哲学研究者","Unit 13"],["philosophy","n. 哲学，人生观，哲学思想，哲理，基本原理，见解，达观，沉着","Unit 13"],["phrase","n.;vt. 惯用语，词组，成语，措词，乐句；用短语表达，把(乐曲)分成短句；短语","Unit 13"],["physical","adj.;n. 身体的，物质的，自然的，物理学的，好色的；体格检查","Unit 13"],["physician","n. 医师，内科医师，解除痛苦者；主治医师","Unit 13"],["pierce","vt.;vi. 刺穿，穿透，打眼于，洞悉，(声音)响彻，(亮光)照进，深深地打动；刺入，穿入，透入，进入","Unit 13"],["corporate","adj. 社团的，合伙的，公司的；团体的，法人的，社团的","Unit 13"],["corporation","n. 公司，合作，法人团体；法人团体，社团，法人","Unit 13"],["reason","n.;vt.;vi. 理由，原因，理智，道理，前提，理性；说服，推论，辩论；推论，劝说，思考","Unit 13"],["reasonable","adj. 合理的，明理的，适当的；合理的，公道的，正当的","Unit 13"],["recent","adj. 最近的，近代的，最新的；最近的，新进的","Unit 13"],["serve","vt.;vi.;n. 可作...用，服务，经历，招待，供应，送交，对待；服务，服役，侍应，适合，有用，开球；发球，轮到发球","Unit 13"],["Servant","n. 仆人，有用物，公务员，雇员；受雇人，服务者，公务员","Unit 13"],["Service","n.;vt.;adj. 服务，贡献，雇佣，公职，服役，功劳，仪式，送达，行政部门；保养，维修；武装部队的，服务性的，仆人的，耐用的；服务，业务","Unit 13"],["Set","n.;vt.;vi.;adj. 日落，同伙，组合，集合，装置；放，安置，放置，设定，使凝结，点燃，确定，点缀，使就位，树立，分配，调整；日落，凝固，定型，搁住，结果，适合；决心的，规定的，故意的，持久的，固定的，老套的，准备好的；设置；DOS内部命令:改变或显示分配给环境变量的值","Unit 13"],["setback","n. 挫折，退步，逆流","Unit 13"],["setting","n. 环境，背景，布景，镶嵌，调整，沉落，一副餐具；设置","Unit 13"],["settle","n.;vt.;vi. 有背长椅；决定，整理，安放，使定居，使平静，支付，安排，解决，结算；停留，下陷，沉淀，澄清，安下心来，结清，定居，安家","Unit 13"],["settlement","n. 安顿，解决，处理，结算，殖民，殖民地，沉降；居住区；沉渣","Unit 13"],["Several","adj.;pron. 几个的，一些的，各自的；几个","Unit 13"],["severe","adj. 严格的，尖锐的，严肃的，严重的，严厉的，朴素的；严厉的，苛刻的，严重的","Unit 13"],["shape","n.;vt.;vi. 形状，形态，外形，形式，身材；定形，使成形，塑造，计划，使符合；成形，形成，成长；形状","Unit 13"],["share","n.;vt.;vi. 部分，参与，一份，参股，份额；均分，分担，分享，分配，共有；分享；共享；DOS外部命令:在网络或多工系统中提供文件共享；文件锁定及检测磁盘更动和对超过32MB硬盘分区的支持","Unit 13"],["sharp","n.;adj.;adv. 半升音调，利刃，骗子；锋利的，明显的，敏锐的，急剧的，尖刻的，严厉的，刺耳的，精明的；锐利地，急速地","Unit 13"],["shelter","n.;vt.;vi. 庇护所，避难所，庇护，隐蔽处，掩蔽；庇护，保护，隐匿；躲避","Unit 13"],["sophisticated","adj. 复杂的，久经世故的；尖端的，高级的，非常有经验的","Unit 13"],["sovereign","n.;adj. 元首，独立国；具有主权的，至高无上的，国王的，完全的","Unit 13"],["sow","n.;vt.;vi. 母猪，懒胖女人；播种，散布，使密布；播种","Unit 13"],["toll","n.;vt.;vi. 通行费，代价，钟声；征收，敲钟，鸣钟，勾引，引诱；征税，鸣钟","Unit 13"],["tone","n.;vt.;vi. 音调，音质，语调，语气，色调，气氛，状况，思想状态；给...定色调，增强，使...的声调和谐，定音调；颜色调和；双音频","Unit 13"],["topic","n. 主题，论题，话题","Unit 13"],["perform","vt.;vi. 进行，履行，完成，执行，表演；行动，工作，执行，演出","Unit 14"],["performance","n. 施行，工作情况，成绩，行为，表现，演出；绩效，性能","Unit 14"],["period","n.;adj.;int. 时期，节段，节，句点，学时，周期；当时特有的，过去某段时期的；就是这话，就是这么回事","Unit 14"],["periodical","n.;adj. 期刊；定期出版的，(有关)期刊的，间歇(性的)，周期的，定期的","Unit 14"],["perish","vi.;vt. 毁灭，丧生，凋谢，颓丧，死亡，腐烂；毁坏，使麻木，使丧生，耗尽","Unit 14"],["perpetual","adj. 永久的，不断的，无期限的，没完没了的，四季开花的；永远的，终身的，持续的","Unit 14"],["perplex","vt. 使困惑，使复杂化，使为难；困惑，使复杂化，使纠缠不清","Unit 14"],["perspective","n.;adj. 远景，透视感，(观察问题的)视角，透视法，看法，透视图；透视的，透视法的；透视","Unit 14"],["pessimistic","adj. 悲观的，厌世的，悲观主义的","Unit 14"],["optimistic","adj. 乐观的，乐观主义的，乐天的","Unit 14"],["optimum","n.;adj. 最适条件，最佳效果；最优的，最适宜的","Unit 14"],["option","n. 选择权，挑选，选项；选项","Unit 14"],["optional","adj. 可选择的，随意的；选购的","Unit 14"],["organ","n. 风琴，器官，元件，机构，机关；风琴","Unit 14"],["organic","adj. 器官的，有机的，组织的，根本的；器官的，有生命的，有机的，器质的","Unit 14"],["organism","n. 生物，有机体，社会组织；生物[体]，[有]机体","Unit 14"],["organisation/-zation","n. 组织，结构，团体，体制；组织，机构，机化(血栓或坏死组织)","Unit 14"],["organise/-ize","vt. 组织，有机化，给予生机","Unit 14"],["enhance","vt. 提高，加强，增加","Unit 14"],["enlarge","vt.;vi. 扩大，增大；扩大，详述","Unit 14"],["enlighten","vt. 教育，启发，启蒙，开导，教导","Unit 14"],["rare","adj.;adv. 稀罕的，罕有的，珍奇的，稀薄的，半熟的，非常好的；非常","Unit 14"],["rarely","adv. 很少地，罕有地","Unit 14"],["rate","n.;vt.;vi. 比率，率，速度，价格，费用，等级；估价，认为，鉴定等级，责骂；被评价，责骂","Unit 14"],["ratio","n. 比，比率；比，比率，比例","Unit 14"],["rational","adj.;n. 理性的，合理的；有理数","Unit 14"],["reach","n.;vt.;vi. 伸出，延伸，区域，范围，流域，岬；到达，达到，伸出，延伸，影响；达到，延伸，伸出手，传到","Unit 14"],["react","vi. 起反应，起作用，反攻；应答，发生反应","Unit 14"],["realistic","adj. 现实的，逼真的，现实主义的，实在论的","Unit 14"],["reality","n. 实在，事实，实体，逼真；现实，实在存在的事物，实在性","Unit 14"],["realise/-ize","vt. 实现，认识到，体会到，了解，认清，使显得逼真，变卖财产为现钱","Unit 14"],["select","adj.;v.;n. 挑选出来的，极好的；选择，挑选；被挑选者，精萃；选定","Unit 14"],["selection","n. 选择，选文，精选品；选择，淘汰","Unit 14"],["sense","n.;vt. 感应，感觉，感官，意识，观念，情理，知觉，理智；感觉，觉察，检测；阅读；检测","Unit 14"],["sensation","n. 感觉，轰动；感觉","Unit 14"],["Sensible","adj. 有感觉的，敏感的，明智的；可感觉的","Unit 14"],["Sensitive","adj. 敏感的，易感的，灵敏的，感光的；敏感的，灵敏的，感度高的","Unit 14"],["Sequence","n.;vt. 序列，续发事件，顺序，连续；按顺序排好；顺序","Unit 14"],["Serial","n.;adj. 分期连载作品，连载小说；连续的，一连串的，连载的，分期偿还的；连续的；串行的","Unit 14"],["Series","n. 串联，序列，连续，系列，丛书，套，级数，组；系列","Unit 14"],["serious","adj. 严肃的，认真的，重要的，严重的；严重的","Unit 14"],["toast","n.;vt.;vi. 吐司，烤面包，干杯；敬酒，烤，使暖和；烤，烘","Unit 14"],["together","adv. 一起，共同，彼此","Unit 14"],["token","n.;adj. 表征，记号，代币；象征的，表意的；记号","Unit 14"],["tolerance","n. 宽容，忍受，容忍，容许量，公差；允许误差","Unit 14"],["tolerant","adj. 宽容的，容忍的，(对冷、热)能耐的；能耐受的","Unit 14"],["tolerate","vt. 宽容，容许，有耐力","Unit 14"],["accumulate","v. 积聚，堆积","Unit 14"],["accuracy","n. 精确，正确；准确度","Unit 14"],["accurate","adj. 正确的，精确的；准确的，精确的","Unit 14"],["accuse","vt.;vi. 指责，控告，归咎于；指责，控告","Unit 14"],["achieve","vt.;vi. 完成，达到；如愿以偿","Unit 14"],["acknowledge","vt. 承认，告知收悉，答谢，报偿；承认，答谢，收到的通知","Unit 14"],["chemical","n.;adj. 化学药品；化学的，化学上用的","Unit 14"],["cherish","vt. 珍爱，怀有，爱护","Unit 14"],["chip","n.;vt.;vi. 屑片，薄片，碎片；削，切，削成碎片，使摔倒，凿；削下屑片；孔屑；组件；晶片；芯片","Unit 14"],["choice","n.;adj. 选择，精选品，选择权；精选的，挑三拣四的，上等的；DOS内部命令:在批处理文件中；该命令用于提示用户作出选择，决定批处理文件的流程","Unit 14"],["choose","vt.;vi. 选择，宁愿，欲；作出选择，愿意；选取","Unit 14"],["board","n.;vt.;vi. 木板，甲板，膳食，会议桌；乘船，供膳食，用板覆盖；搭伙；板","Unit 14"],["boast","n.;vi.;vt. 吹牛；吹牛，自夸；夸口说，自恃有","Unit 14"],["bonus","n. 奖金，红利；奖金，红利，额外补贴","Unit 14"],["boom","n.;vi.;vt. 繁荣，隆隆声；急速发展，发隆隆声；使兴旺，发隆隆声","Unit 14"],["boost","n.;vt. 推进，吹捧；推进，提高，宣扬，促进","Unit 14"],["verbal","adj. 用言辞的，言语的，口头的，逐字的，动词的；言语的，口述的","Unit 14"],["verdict","n. 裁决，判决，判断性意见，定论，结论；定论，判断，意见","Unit 14"],["verify","vt. 证明，查证，证实，检验，校验；校验，检验；DOS内部命令:设定写入磁盘时是否验证写入的正确性","Unit 14"],["verse","n.;vt.;vi. 诗，韵文，诗句；用诗表达；作诗","Unit 14"],["version","n. 一种描述，版本，译文；版本","Unit 14"],["vessel","n. 船，容器，脉管；管，脉管，(容)器","Unit 14"],["holy","adj.;n. 神圣的，圣洁的，至善的；神圣的东西","Unit 15"],["hono(u)r","n.;vt. 荣誉，头衔，信用，尊敬，名誉，阁下，勋章；尊敬，授予荣誉，承兑，实践","Unit 15"],["honorable","adj. 值得尊敬的，荣耀的，高贵的","Unit 15"],["horizon","n. 地平线，眼界，(天)视地平","Unit 15"],["horizontal","n.;adj. 水平线，水平面，水平位置；水平线的，平坦的，横的；水平","Unit 15"],["ingredient","n. 成分，因素；配合剂；拼料；成分；组分","Unit 15"],["initiate","n.;adj.;vt. 入会，开始；新加入的；开始，传授基本知识给","Unit 15"],["initiative","n.;adj. 主动行动，首创精神，主动权；自发的，起始的","Unit 15"],["local","adj.;n. 地方性的，当地的，局部的，乡土的，本地的；当地居民，本地新闻，局部；本地的；局部","Unit 15"],["locality","n. 地方，所在，位置；位置，场所，地区","Unit 15"],["locate","vt.;vi. 找出，设于，位于；定居","Unit 15"],["location","n. 位置，场所，特定区域；位置","Unit 15"],["neglect","n.;vt. 疏忽，忽略，漏做；疏忽，忽视，不顾","Unit 15"],["negligible","adj. 可以忽略的，不足取的，无用的；可不计的，可忽视的","Unit 15"],["prescribe","v. 规定，指定，嘱咐，开处方","Unit 15"],["prescription","n. 处方，命令，指定；处方，药方","Unit 15"],["presence","n. 出席，面前，存在，仪态，风度；出现","Unit 15"],["presently","adv. 目前，不久","Unit 15"],["preserve","vt.;vi.;n. 保护，保持，保存，维持，腌，禁猎；加工食品，禁猎；加工成的食品，禁猎地，保护区，防护物","Unit 15"],["preside","vi. 统辖，当主人，主持；主持，负责，指挥","Unit 15"],["press","n.;vt.;vi. 压，揿，按，人群，印刷机，压力，出版社，记者，报刊，新闻舆论，紧迫；压，压榨，紧抱，逼迫，推进，强迫征募，催逼；压，重压，催促，拥挤，奋力前进，受压","Unit 15"],["pressure","n.;vt. 压，榨，按，强制，压力，压迫，压强；迫使，使增压，密封","Unit 15"],["presumably","adv. 推测上，大概","Unit 15"],["presume","vt.;vi. 假定，推测，擅自，意味着；擅自行动，相信","Unit 15"],["prevent","v. 预防，防止，阻止，妨碍","Unit 15"],["previous","adj. 早先的，前面的，过急的；以前的，生前的，前述的","Unit 15"],["prey","n.;vi. 被掠食者，牺牲者；捕食","Unit 15"],["reliable","adj. 可靠的，可信赖的；可靠的，可信赖的，确实的","Unit 15"],["reliance","n. 信任，信赖，受信赖的人(或事)；信任，信赖，信心","Unit 15"],["religion","n. 宗教，信仰；宗教，宗教信仰，信仰","Unit 15"],["religious","adj.;n. 宗教性的，虔诚的，宗教上的，严谨的；修道士，出家人","Unit 15"],["rely","vi. 信赖，依赖，信任","Unit 15"],["straight","n.;adj.;adv. 直线，直；直的，笔直的，正直的，直接的，连续的，整齐的；直接地，立即，不断地","Unit 15"],["straightforward","adj. 笔直的，率直的，明确的，简单的，直接的","Unit 15"],["strain","n.;vt.;vi. 紧张，拉紧，张力，过劳，扭伤，血缘，种，族，气质，曲调，旋律，口吻；使劳累，拉紧，过分使用，扭伤，滥用，曲解，滤；尽力，努力，紧拉，弯曲，被滤出","Unit 15"],["strategy","n. 战略，策略","Unit 15"],["strength","n. 力量，实力，强度，浓度，人数，抵抗力；强度","Unit 15"],["strengthen","vt.;vi. 加强，变坚固；变强，股票上涨","Unit 15"],["strenuous","adj. 奋发的，费劲的，艰苦的","Unit 15"],["transaction","n. 交易，办理，学报，和解协议；事务处理","Unit 15"],["transform","vt.;vi. 使转换，改变，改造，使...变形；改变，转化，变换；变换","Unit 15"],["transient","n.;adj. 瞬，短期居留者，过境鸟，瞬变现象；短暂的，易变的，瞬变的，路过的；瞬变过程；过渡过程；过渡的；瞬变的；瞬时峰值电压","Unit 15"],["translation","n. 翻译，译文，转化，调任，平移，转译；转换","Unit 15"],["architect","n. 建筑师，设计者，缔造者","Unit 15"],["architecture","n. 建筑学，建筑式样；体系结构","Unit 15"],["archive","vt.;n. 把...存档；档案馆，档案文件；挡案库，存档","Unit 15"],["area","n. 区域，面积，范围，空地；区域","Unit 15"],["arena","n. 角斗场，舞台，场地；尿沉渣，尿沙；脑沙","Unit 15"],["argue","vi.;vt. 提出理由，争论，辩论；主张，辩论，证明，说服","Unit 15"],["argument","n. 争论，论证，论据，自变量；参数","Unit 15"],["arise","vi. 站立，出现，起来","Unit 15"],["arouse","vt.;vi. 唤醒，鼓励，引起；醒来","Unit 15"],["array","n.;vt. 排列，衣服，大批，军队；布署，打扮，排列；数组；阵列","Unit 15"],["visible","adj.;n. 看得见的，明显的，显然的；可见物","Unit 15"],["vision","n.;vt. 视觉，眼光，视力，幻想；梦见，想象，显示","Unit 15"],["visual","adj. 视觉的；视觉的，视力的，视觉性记忆优势者","Unit 15"],["vital","adj. 生命的，重要的，充满活力的，生死攸关的，致命的；生命的，生活的，生活上必需的，紧要的","Unit 15"],["vivid","adj. 生动的，鲜明的，鲜艳的，活泼的，逼真的，清晰的","Unit 15"],["void","n.;adj. 空虚，空间，空白，空隙，空虚感；空的，无效的，无人的，没有的，无用的；脱墨；空白点","Unit 15"],["volume","n.;vi.;vt.;adj. 册，卷，体积，容量，大量，许多，份量，音量；成团卷起；把...收集成卷；大量的；卷","Unit 15"],["consequence","n. 结果，重要性；结果，后果，推断","Unit 15"],["consequently","adv. 所以","Unit 15"],["conservation","n. 保护，保存；保存","Unit 15"],["conservative","adj. 保守的，守旧的，有保存力的；防腐剂；保存剂","Unit 15"],["consider","v. 考虑，思考，认为","Unit 15"],["considerable","adj. 相当的，可观的，重要的","Unit 15"],["considerate","adj. 体贴的，体谅的，考虑周到的","Unit 15"],["consume","vt.;vi. 消耗，消费，消灭；耗尽，毁灭","Unit 15"],["consumption","n. 消费，消费量，痨病；消耗量；耗量","Unit 15"],["dissolve","v. 溶解，解散","Unit 15"],["exchange","n.;v. 交换，(电话)交换局，交换机，汇兑，交易所；交换，交易，兑换；交换；电话局","Unit 15"],["exclude","vt. 除外，排除，排斥；除外(诊断)","Unit 15"],["exclusive","adj. 排外的，独占的，唯一的；独占的","Unit 15"],["confine","vt.;vi.;n. 限制，使不外出，禁闭；邻接，交界；边缘，范围，区域","Unit 16"],["confirm","vt. 证实，确定，批准，使巩固；确认","Unit 16"],["conflict","n.;vi. 战斗，冲突，矛盾，争执；争执，战斗，冲突，抵触；冲突","Unit 16"],["confidence","n. 信心；可靠","Unit 16"],["confident","adj. 有信心的，有把握的","Unit 16"],["confidential","adj. 机密的，获他人信赖的，易于信任他人的；秘密件","Unit 16"],["configuration","n. 结构，表面配置，外形，配置；配置","Unit 16"],["trail","n.;vt.;vi. 踪迹，痕迹，一串，尾部，小径，持枪姿势；拖，尾随，追踪，落后于，开出路；拖曳，垂下，落后，飘出，蔓生","Unit 16"],["train","n.;vt.;vi. 火车，列车，行列，长队，一连串的后果，顺序；训练，教育，对准；受训练，锻炼","Unit 16"],["training","n. 训练，培养；训练","Unit 16"],["trait","n. 特征，特性，一笔，少许","Unit 16"],["view","n.;vt. 视野，风景，见解，视力，观看，视图，指望，意图，印象；看，考虑，视察，查看，估量；视图","Unit 16"],["viewpoint","n. 观点","Unit 16"],["violence","n. 猛烈，暴力，暴虐，暴行；暴行，暴力，暴乱","Unit 16"],["violent","adj. 暴力的，猛烈的，激烈的，极端的，凶暴的","Unit 16"],["virtual","adj. 实际上起作用的，虚的，实质的，有效的，事实上生效的；虚拟","Unit 16"],["virtue","n. 德行，美德，优点，功效，效力；美德，贞操，优点","Unit 16"],["apparent","adj. 清晰可见的，显然的，表面上的；外在的","Unit 16"],["appeal","n.;vi.;vt. 恳求，诉请，上诉，吸引力；呼吁，诉请，要求，上诉，有吸引力；将...上诉","Unit 16"],["appear","vi. 出现，显得，来到；出庭，到案，出现","Unit 16"],["appearance","n. 出现，露面，外观，外表，出版；外观，版面","Unit 16"],["appliance","n. 器械，用具，应用；矫正器；器","Unit 16"],["applicable","adj. 合适的，可应用的；适用的，适应的","Unit 16"],["application","n. 应用，申请，志愿书，应用程序；应用，应用程序","Unit 16"],["appoint","vt. 任命，指定，下令；派，派任，任命","Unit 16"],["appointment","n. 约会，委任的职位，委派；任命，派，指定","Unit 16"],["apply","vt.;vi. 涂，应用；申请，适用","Unit 16"],["appreciate","vt.;vi. 赏识，鉴别，为...而感激，领会，欣赏；增值，涨价","Unit 16"],["discriminate","v. 区别，差别待遇","Unit 16"],["discuss","vt. 讨论，论述；讨论，辩论","Unit 16"],["disease","n. 疾病，弊病；病","Unit 16"],["scape","v. 柄节(昆虫)","Unit 16"],["specially","adv. 特别地，专门地","Unit 16"],["essay","n.;vt. 随笔，短文，评论，企图；试图","Unit 16"],["essence","n. 实质，本质，香精；香精","Unit 16"],["essential","n.;adj. 要素，要点，本质；必要的，重要的，本质的；本质冒险","Unit 16"],["stablish","vt. 使坚固（等于establish）","Unit 16"],["thic","n. 一家非盈利性机构，组织高级技术论坛会议等，总部位于美国俄亥俄州","Unit 16"],["ethnic","adj. 人种的，种族的；人种的","Unit 16"],["valuate","vt. 对…作估价","Unit 16"],["industrial","adj.;n. 工业的，供工业用的，工业高度发展的，产业的；工业工人，工业股票","Unit 16"],["industrialize/-ise","vt.;vi. 使工业化；实现工业化","Unit 16"],["inevitable","adj. 不可避免的，必然的；不可避免的，无法规避的，必然的","Unit 16"],["miserable","adj. 悲惨的；痛苦的；卑鄙的","Unit 16"],["misery","n. 痛苦，悲惨，不幸，穷困","Unit 16"],["mislead","vt. 误导","Unit 16"],["mix","n.;vt.;vi. 混合物，混乱，糊涂；使混合，弄混，使结合，混淆；相混合，交往，参与","Unit 16"],["mixture","n. 混合，混淆，混合物；混合物","Unit 16"],["necessary","adj. 必要的；必然的；必需的","Unit 16"],["necessitate","vt. 迫使，使成为必需，需要","Unit 16"],["necessity","n. 需要，必需品，必然；必要性，必然性，必要","Unit 16"],["negative","n.;adj. 否定，否定语，负数，底片；否定的，消极的，负的，阴性的；负数，负值","Unit 16"],["negotiate","vi.;vt. 商议，谈判，交涉；谈妥，转让，处理","Unit 16"],["outer","adj. 外部的，外面的，在外的，远离中心的；外部的，外面的，外侧的","Unit 16"],["outlet","n. 出口，发泄方法，市场；出口","Unit 16"],["outline","n.;vt. 大纲，轮廓，概要；描画轮廓，描述要点；大纲，分级，轮廓","Unit 16"],["outlook","n. 观点，景色，前途，了望；展望","Unit 16"],["output","n. 输出，产品，产量；输出","Unit 16"],["poverty","n. 贫穷，贫困，缺乏；贫乏，缺乏","Unit 16"],["power","n.;vt. 力，体力，力量，势力，动力，权力，强国，乘方，强度，幂，功率；使...有力量，供以动力，激励；乘幂；DOS外部命令:能控制许多电池电源计算机上的电源管理特性","Unit 16"],["practical","adj. 实际的，现实的，实用性的；事实上的，实际上的，接近...的","Unit 16"],["practice","n.;v. 实践，练习，实行，惯例，习惯，开业；实践，实行，练习，实习，业务","Unit 16"],["practise","v. 实践，实行，练习，实习，从事(职业)","Unit 16"],["practitioner","n. 从业者，开业者；行医者，医师","Unit 16"],["preach","v.;n. 传道，讲道，说教，宣讲，鼓吹；说教，布道","Unit 16"],["precede","vt.;vi. 在...之前，优于，较...优先；在前面","Unit 16"],["precaution","n.;vt. 预防，留心，警戒；预先警告","Unit 16"],["precedent","n.;adj. 先例，前例；在先的，在前的","Unit 16"],["preceding","adj. 在前的，前面的；在前的，在先的，前面的","Unit 16"],["precious","adj. 宝贵的，珍贵的，过于精致的，珍爱的","Unit 16"],["precise","adj. 精确的，严谨的，明确的；精密的，正确的","Unit 16"],["precision","n.;adj. 精密，精确，精确度，精度；精密的，精确的；精度","Unit 16"],["stress","n.;vt. 压力，紧迫，强调，重音，重点，应力；加压力于，着重，重读","Unit 16"],["stretch","n.;adj.;vt.;vi. 伸展，张开，连绵，一段路，一段时间；可伸缩的，弹性的；伸展，张开，曲解，使过度伸展；伸展，延伸；伸展","Unit 16"],["remote","adj. 遥远的，偏僻的，疏远的，微少的；远程，远程访问实用程序","Unit 17"],["remove","vt.;vi.;n. 移动，调动，除去，迁移，开除，移交；迁移，移动，搬家；班级，升级，移动，搬家，间距；删除","Unit 17"],["removal","n. 移动，移居，迁移，排除，切除；切除，除去","Unit 17"],["remain","vi. 保持，逗留，剩余；停留，居住，继续","Unit 17"],["remainder","n.;v.;adj. 剩余物，其他人，残余，余数；削价出售(图书)；剩余的，出售削价剩书的；余数","Unit 17"],["remains","n. 剩余物，废墟，残余；遗体，尸体，遗骸","Unit 17"],["remedy","n.;vt. 药物，治疗法，治疗，补救，赔偿；治疗，补救，矫正，改善，修补，修缮","Unit 17"],["remember","vt.;vi. 记得，回忆起，记住，铭记，纪念；记得","Unit 17"],["remind","vt. 提醒，使想起","Unit 17"],["render","vt.;vi.;n. 回报，给于，付给，汇报，提出，舍弃，反映，表示，表演，致使，执行，实施；给予补偿；交纳，打底","Unit 17"],["contemporary","n.;adj. 同时代的人；同时代的，属于同一时期的","Unit 17"],["contempt","n. 轻视，轻蔑；藐视，侮辱，轻视","Unit 17"],["content","n.;adj.;vt. 内容，满足，意义，要旨；满足的，满意的；使...满足，使...安心；内容","Unit 17"],["contend","vi.;vt. 奋斗，斗争，竞争；为...斗争","Unit 17"],["context","n. 上下文，背景，来龙去脉；上下文","Unit 17"],["contradict","vt.;vi. 反驳，与...抵触，与...矛盾；反驳","Unit 17"],["contrary","adj.;n.;adv. 相反的，矛盾的，对立的；相反，对立面；相反地","Unit 17"],["diverse","adj. 不同的，变化多的","Unit 17"],["diversion","n. 转移；转向","Unit 17"],["divert","vt.;vi. 转移，使欢娱；转移","Unit 17"],["divide","vi.;vt.;n. 分开，分配，分裂；分，分开，分裂，除；分配，分水岭；除","Unit 17"],["dividend","n. 被除数，股利；被除数","Unit 17"],["division","n. 分，分开，除法，部门(如部、处、系等)，师；部分","Unit 17"],["documentary","n.;adj. 记录片；文件的","Unit 17"],["execute","vt. 执行，实行，完成，处死，制成；执行","Unit 17"],["executive","n.;adj. 执行部门，执行委员会，执行者，经理主管人员；执行的，善于执行的，善于经营的；执行程序","Unit 17"],["exemplify","vt. 例证，例示；制作经公章证明的誊本，例证","Unit 17"],["exert","vt. 发挥，运用，施以影响；施加，产生，行使","Unit 17"],["exhaust","n.;vt.;vi. 排气，排气装置，废气；抽完，用尽，耗尽，使精疲力尽；排气","Unit 17"],["xist","vi. X染色体失活特异转录本","Unit 17"],["existence","n. 存在，生存；存在，存在状态，实体","Unit 17"],["moral","n.;adj. 道德，品行，寓意；道德的，品性端正的，精神上的","Unit 17"],["morality","n. 道德，教训，品行；道德，道义","Unit 17"],["moreover","adv. 而且，此外","Unit 17"],["mostly","adv. 大概，大部分，主要；大部份","Unit 17"],["prior","adj.;n. 更重要的，较早的，在先的；小隐修院院长，大隐修院副院长","Unit 17"],["priority","n. 优先权，优先；优先级","Unit 17"],["privacy","n. 隐私，隐居，秘密；个人保密权","Unit 17"],["private","adj.;n. 私人的，秘密的，私立的，隐蔽的；士兵，隐士，阴部；私人的","Unit 17"],["privilege","n.;vt. 特权，特别恩典，基本权利，特免；给与...特权，特免","Unit 17"],["prudent","adj. 审慎的，三思而后行的，精明的，节俭的","Unit 17"],["submit","vt.;vi. 使服从，使受到，委托，提交，认为；屈服，服从","Unit 17"],["subordinate","n.;adj.;vt. 属下，附属物；下级的，次要的，附属的；使居下位，使服从","Unit 17"],["subscribe","vt.;vi. 捐献，签署；赞成，同意，捐款，预订，认购；订阅","Unit 17"],["subsequent","adj. 后来的，接下去的；后来的","Unit 17"],["Substance","n. 物质，实质，主旨，资产，本质，牢固；物质","Unit 17"],["substantial","n.;adj. 重要材料(或事物)，有实际价值的东西；实质上的，物质的，有内容的，结实的","Unit 17"],["substitute","n.;vt.;vi.;adj. 代理，代理人，代用品，代替者，代替物；代替；替代，取代，代用；代替的，代用的，代用品的；置换；替代","Unit 17"],["subtle","adj. 敏锐的，精细的，狡猾的，稀薄的，灵巧的，微妙的；锐敏的；精细的","Unit 17"],["associate","n.;vt.;vi. 同伴，伙伴，关联的事物；使联合，使发生联系；交往；关联","Unit 17"],["association","n. 协会；关联","Unit 17"],["amend","vt.;vi. 修改，改善，改良；改过自新","Unit 17"],["among(st)","prep. 在...之中","Unit 17"],["amount","n.;vi. 总数，总额；总计，等同","Unit 17"],["ample","adj. 大量的，充足的，丰富的","Unit 17"],["amuse","vt. 消遣，娱乐，使发笑","Unit 17"],["stick","n.;vt.;vi. 棍，棒，刺，枯枝，茎，条状物；插进，刺入，钉住，伸出，粘贴，停止；粘住，停留，坚持，陷住，伸出","Unit 18"],["stimulate","vt.;vi. 刺激，激励，鼓舞；起刺激作用","Unit 18"],["Stir","n.;vt.;vi. 骚动，轰动，搅动，监狱；移动，摇动，激起，惹起，搅拌；走动，传播，搅拌","Unit 18"],["stipulate","v. 规定，保证","Unit 18"],["infer","vt.;vi. 推论出，推断；作推论","Unit 18"],["inference","n. 推论；推论，推理，推断","Unit 18"],["inferior","adj.;n. 次等的，较差的，下方的，下级的；部下，次品，下标(符号)","Unit 18"],["influential","adj. 有影响的，有势力的","Unit 18"],["inform","vt.;vi. 通知，使了解，使充满；提供资料，告发","Unit 18"],["information","n. 消息，知识，通知，情报，信息，问讯处，起诉；信息","Unit 18"],["approach","n.;vt.;vi. 接近，入门；接近，近似，找...商量；靠近","Unit 18"],["appropriate","adj. 适当的；适当的，拨出，占用","Unit 18"],["approval","n. 赞成，批准；核准","Unit 18"],["approve","vt.;vi. 赞同，核准，为...提供证据；赞许","Unit 18"],["apt","adj. 有...倾向的，易于的，恰当的，聪明的；自动数控语言，自动图象传输，自动程序控制，自动程序设计工具","Unit 18"],["confront","vt. 使面对，对抗，遭遇，使对质，比较；对证，使对质，比较","Unit 18"],["confuse","vt. 使混乱，使狼狈，使困惑；混淆","Unit 18"],["confusion","n. 混乱，混淆，无秩序；含混","Unit 18"],["congress","n. 国会，会议，讨论会；会议，会合","Unit 18"],["connect","v. 连接，联合，联系","Unit 18"],["connection/connexion","n. 连接，关系，前后关系；连接","Unit 18"],["conscious","adj. 有意识的，知觉的，觉察的；有意识的，清醒的","Unit 18"],["continual","adj. 持续不断的，继续的；连续的","Unit 18"],["continue","vi.;vt. 继续，延续，延长；使继续，使延长","Unit 18"],["continuous","adj. 连续的，继续的，连续不断的；连续的","Unit 18"],["dismiss","vt.;vi. 解散，开除，解职；解散","Unit 18"],["disorder","n.;vt. 杂乱，混乱；扰乱，使失调","Unit 18"],["disperse","vt.;vi.;adj. 分散，传播，散开；分散；分散的","Unit 18"],["displace","vt. 移置，替换，转移","Unit 18"],["display","n.;vt. 显示，陈列，炫耀，显示器；陈列，显示，表现，夸示；显示器；显示","Unit 18"],["distribute","vt. 分配，散布，分发；分配，分发","Unit 18"],["distort","vt. 扭曲，歪曲；歪区，曲解，纂改","Unit 18"],["distract","vt. 转移，分心，使发狂","Unit 18"],["evolution","n. 进化，发展，进展，(气体)放出，开方；进化，演化，旋出","Unit 18"],["volve","v. (构词成分)表示\"卷\"，\"旋转\"改变，变化","Unit 18"],["exaggerate","v. 夸大，夸张","Unit 18"],["examine","v. 检查，调查，考试","Unit 18"],["mode","n. 模态，调式，样式，文体，状态，方式，风尚；方式；DOS外部命令:设定各种设备命令","Unit 18"],["model","n.;adj.;vi.;vt. 模型，模范，模特儿；模范的，作模型用的；做模型，做模特儿；使模仿，塑造；模型","Unit 18"],["moderate","adj.;vt.;vi. 适度的，稳健的，中等的，节制的；节制，减轻，使缓和；变缓和，主持会议","Unit 18"],["modern","n.;adj. 现代人，有思想的人；现代的，时髦的","Unit 18"],["modernisation/-zation","n. 现代化","Unit 18"],["modest","adj. 谦逊的，羞怯的，端庄的，适度的；适当的","Unit 18"],["modify","vt.;vi. 修正，变更，修饰，缓和，减轻；被修改；修改","Unit 18"],["predecessor","n. 前任，先辈，前身；初牙，前辈，祖先","Unit 18"],["predict","v. 预知，预言，预报","Unit 18"],["preface","n.;vi.;vt. 序，绪言，前言；作序，写前言；给...作序，以...开始","Unit 18"],["preferable","adj. 更可取的，更好的，更合意的","Unit 18"],["preference","n. 偏爱，优先，喜爱物；首选项","Unit 18"],["prejudice","n.;vt. 偏见，成见，侵害；使存偏见，使有成见，侵害","Unit 18"],["preliminary","n.;adj. 初步做法，初步措施，预试，预选赛；初步的，开始的，预备的","Unit 18"],["premier","n.;adj. 总理，首相；首位的，最初的","Unit 18"],["premise","n.;vt.;vi. 前提，房屋连地基，上述各项；预先提出，引出，作为...的前提；作出前提","Unit 18"],["premium","n. 额外补贴，奖金，奖赏，保险费；保险费","Unit 18"],["preparation","n. 准备，预备，预习；制剂","Unit 18"],["reflect","vt.;vi. 反射，反映，招致，深思；被反射，映出，深思，考虑，指责","Unit 18"],["reflection/reflexion","n. 反映，沉思，映像，想法，责难；反射","Unit 18"],["reform","n.;vt.;vi. 改革，改正，改造；改革，改过，革新，重整；革新，改过","Unit 18"],["reject","n.;vt. 被拒之人，被弃之物，不合格品，次品；拒绝，抵制，否决，驳回，丢弃，呕出","Unit 18"],["rejoice","vt.;vi. 使欢喜；欣喜，高兴，庆祝","Unit 18"],["relate","vt.;vi. 讲，叙述，使互相关联；有关，符合，相处得好","Unit 18"],["relation","n. 关系，联系，叙述，故事，家属，亲戚；关系","Unit 18"],["relationship","n. 关系，关联；关系","Unit 18"],["relative","n.;adj. 亲戚，关系词；有关系的，相对的，比较的","Unit 18"],["relativity","n. 有关系，相关性，相对性；相对性","Unit 18"],["relevant","adj. 有关联的，有关系的，适当的，相应的；有关的，相关的","Unit 18"],["overlook","vt.;n. 俯瞰，远眺，没注意到；眺望，俯瞰到的景色","Unit 18"],["overseas","adj.;adv. 海外的，国外的；在海外，在国外","Unit 18"],["stand","n.;vi.;vt. 站立，站住，停顿，讲台，看台，立场，法院证人席；站，立，坐落，停滞，位于，坚持，维持原状；忍受，使站立，抵挡","Unit 19"],["standpoint","n. 立场，观点","Unit 19"],["stance","n. 准备击球姿势，站立的姿势，位置，姿态；地位，形势","Unit 19"],["start","n.;vi.;vt. 惊起，出发，开端，起点，吃惊，有利条件；开始，出发，启动，跳起，吃惊，出现，松动，脱落，起价，参赛；使惊起，开动，发动，启动，开始，创办，提议，使松动，使脱落，起用；起始","Unit 19"],["startle","n.;vt.;vi. 惊愕，惊恐；吃惊，使惊愕；惊起","Unit 19"],["starve","v. (使)饿死，(使)挨饿","Unit 19"],["state","n.;adj.;vt. 州，状态，情形，国家，政府，领土，国务，社会地位；国家的，正式的，礼仪用的，州的；说明，陈述，规定；状态","Unit 19"],["statement","n. 陈述，指令，声明；程序语句；语句","Unit 19"],["statesman","n. 政治家","Unit 19"],["Statistics","n. 统计学，统计资料；统计信息","Unit 19"],["statue","vt.;n. 以雕像装饰；雕像","Unit 19"],["status","n. 状态，情形，地位，要人身份；状态","Unit 19"],["statute","n. 法令，成文法律，法规，章程，条例；法令，法规，成文法","Unit 19"],["stay","n.;vt.;vi. 停留，逗留，制止，延缓，停止，支柱，支撑物，支索；制止，延缓，坚持，支持，支撑，用支索固定；停留，逗留，暂停，坚持，中止","Unit 19"],["steer","vt.;vi.;n. 引导，驾驶，航行，控制；驾驶，掌舵，行驶；驾驶指示，劝告","Unit 19"],["stem","n.;vt.;vi. 茎，干，柄，船首，血统，堵塞物；摘掉茎，装柄于，阻止，堵住，逆行；堵住，逆行","Unit 19"],["step","n.;vt.;vi. 步骤，步，步幅，脚步声，踏级，步伐，短距离，步态，手段，等级；踏，以步测量，跨步，使成阶梯状；跨步，轻快地走，跳舞，踩，踏上，行走；步骤","Unit 19"],["stern","n.;adj. 尾部，船尾，臀；严厉的，严格的，坚定的，坚决的","Unit 19"],["anonymous","adj. 姓氏不详的，无名的，无特色的；无记录","Unit 19"],["answer","n.;vt.;vi. 答案，回答，回报，答辩；回答，反驳，适应，响应，符合；回答，答应，负责，符合，成功；用户问题及答案新闻组","Unit 19"],["anticipate","vt. 预期，占先，加速，提前使用；提前出现，先期发生","Unit 19"],["anxiety","n. 焦虑，忧虑，令人焦虑的事；焦虑","Unit 19"],["anxious","adj. 忧虑的，发愁的，渴望的","Unit 19"],["apart","adv.;adj. 成零碎，成距离，分别地，分离着；分离的","Unit 19"],["assassinate","vt. 暗杀，行刺；暗杀，行刺，中伤","Unit 19"],["assault","n.;vt.;vi. 攻击，袭击；袭击，攻击；发动攻击","Unit 19"],["assemble","vt.;vi. 集合，收集，装配；集合；汇编","Unit 19"],["assembly","n. 与会者，集会，装配，组件；装配","Unit 19"],["assert","vt. 主张，坚称，断言；宣称，断言，维护","Unit 19"],["component","n.;adj. 元件，组件，成分；组成的，构成的；组件","Unit 19"],["compose","vt.;vi. 组成，写作，作曲，使平静；创作，排字；编写","Unit 19"],["composition","n. 作文，创作，组成；成分；组成","Unit 19"],["comprehend","vt. 理解，包括","Unit 19"],["comprehension","n. 理解，包含","Unit 19"],["comprehensive","adj. 广泛的，有理解力的，综合的；广泛的，综合的，全面的","Unit 19"],["condemn","vt. 判刑，责备，谴责；定罪，判刑，宣告有罪","Unit 19"],["condense","vt.;vi. 使浓缩，使压缩，缩短；浓缩，凝结","Unit 19"],["condition","n.;vt. 情况，条件；使健康，以...为条件，决定，使适应；条件","Unit 19"],["conductor","n. 领导者，指挥者，售票员，向导；导体","Unit 19"],["disable","vt. 使失去能力，使残废，(律)使无资格；使无效，禁止，关闭","Unit 19"],["disappear","vi. 消失，不见","Unit 19"],["disappoint","vt. 使失望","Unit 19"],["discipline","n.;vt. 训练，纪律；训练，惩罚","Unit 19"],["disclose","vt. 揭露，透露；揭发，揭露，公开","Unit 19"],["discover","vt.;vi. 发现，找到，暴露；发现","Unit 19"],["discovery","n. 发现，被发现的事物；要求告知，发现，发觉","Unit 19"],["hoist","n.;v. 升高，起重机，推动；升起，升高，举起","Unit 19"],["hold","n.;vt.;vi. 把握，把持力，柄，控制，掌握，监禁；保存，握住，拿住，占据，持有，拥有；支持，持续，有效；保留","Unit 19"],["holder","n. 持有人，所有人，支持物；夹持器；夹具；贮罐","Unit 19"],["household","n.;adj. 一家人，家庭，家族，王室；家庭的，家常的，王室的","Unit 19"],["however","adv.;conj. 然而，无论如何，究竟怎样；然而，可是","Unit 19"],["huddle","n.;vt.;vi. 杂乱一团，混乱，拥挤；把...挤在一起，乱堆，草率了事，蜷曲；挤作一团，蜷缩","Unit 19"],["narrow","n.;adj.;vi.;vt. 狭窄部分，隘路；狭窄的，仔细的，有限的，勉强的，狭隘的，手紧的；变窄；使变狭窄","Unit 19"],["nasty","adj. 污秽的，下流的，险恶的","Unit 19"],["nation","n. 国家，民族；民族，国家","Unit 19"],["national","adj. 国家的，国立的，全国性的，民族的；全国性的，国家的，国民的","Unit 19"],["nationality","n. 国籍，国家，民族性；国家，民族，国民","Unit 19"],["native","n.;adj. 本地人，土产，当地人；本国的，与生俱来的，自然的","Unit 19"],["natural","n.;adj. 白痴；自然的，自然界的，本能的，天然的，物质的，正常的，原始的，自然数的","Unit 19"],["nature","n. 自然，大自然，本性，性格，性质；自然，大自然；本性，性能","Unit 19"],["overall","adj.;adv.;n. 全部的，全体的，从头至尾的，一切在内的；从头到尾，总的说来；罩衫，工作服","Unit 19"],["overcome","vt.;vi. 战胜，克服，胜过；得胜","Unit 19"],["portion","n.;vt. 部分，一份，命运，嫁妆；分配，给...嫁妆","Unit 19"],["possibility","n. 可能性，可能的事；可能性，可能发生的事，不确定权","Unit 19"],["possible","adj.;n. 可能的，潜在的，合适的；可能性，可能的事物","Unit 19"],["potential","n.;adj. 潜在性，可能性，潜力，潜能，势，位；有潜力的，可能的，潜在的","Unit 19"],["pour","n.;vt.;vi. 流出，倾泻，骤雨；倒，灌，注，倾泻，诉说，倾吐；倾泻，蜂涌而来，下大雨","Unit 19"],["console","vt.;n. 安慰，藉慰；控制台","Unit 20"],["consist","vi. 组成，存在于，一致","Unit 20"],["consistent","adj. 一致的，坚持的，并立的，坚固的","Unit 20"],["constant","n.;adj. 常数，恒量；不变的，一定的，时常的；常量；常数；恒值","Unit 20"],["constituent","n.;adj. 成分，选民，构成物；构成的，组织的，选举的","Unit 20"],["constitute","vt. 构成，组成，任命；构造，组成","Unit 20"],["constitution","n. 构成，宪法，体格；体质；结构，组织","Unit 20"],["constrain","vt. 强迫，限制，关押","Unit 20"],["construct","vt.;n. 构造，建造，对...进行构思，作图；构成物","Unit 20"],["distinct","adj. 清楚的，显著的，不同的","Unit 20"],["distinction","n. 区别","Unit 20"],["distinguish","v. 区别，辨别","Unit 20"],["fruitful","adj. 结果实的，多实的，产量多的","Unit 20"],["frustrate","vt.;adj. 挫败，击败，破坏；无益的，挫败的，挫折的","Unit 20"],["fulfil/fulfill","vt. 实践，履行，实行，完成，结束，满足；履行，完成，达到","Unit 20"],["function","n.;vi. 官能，职务，功能，函数；活动，运行，行使职责；功能，函数","Unit 20"],["fund","n.;vt. 基金，资金，存款，财源，贮藏；提供资金，积累","Unit 20"],["fundamental","n.;adj. 基本原理，原则，基波；基本的，重要的，原音的","Unit 20"],["evidence","n. 根据，证据，迹象；证据，凭证","Unit 20"],["evident","adj. 显然的，明显的","Unit 20"],["evil","n.;adj. 邪恶，不幸，罪恶；邪恶的，不幸的，有害的，讨厌的","Unit 20"],["environment","n. 环境，外界，围绕；环境","Unit 20"],["enterprise","n. 企业，事业心，进取心，干事业；企业","Unit 20"],["entertain","vt.;vi. 娱乐，招待，怀抱；款待","Unit 20"],["entertainment","n. 娱乐，款待，娱乐表演","Unit 20"],["monopoly","n. 垄断，专卖权，独占事业；垄断，专利品，垄断(权)独占","Unit 20"],["monotonous","adj. 单调的，无变化的","Unit 20"],["mood","n. 心情，气氛，生气，基调；心境","Unit 20"],["transmit","vt.;vi. 传输，传染，传达，遗传，发射，传播；发射信号，留传下来；传送","Unit 20"],["transplant","vt.;vi.;n. 使移居，移植，使迁移；移居，耐移植；移居者，移植","Unit 20"],["stock","n.;adj.;vt.;vi. 树干，祖先，血统，原料，备料，库存，牲畜，股票，股份，保留剧目；存货的，常备的，平凡的，普通的，股票的，保留剧目的，繁殖用的；装把手于，进货，备有，放牧；出新芽，备货，囤积","Unit 20"],["store","n.;vt.;vi.;adj. 商店，贮藏，仓库，备用品，存储器；储存，贮藏，供给；贮藏；贮藏的，现成的；存储器操作；存储","Unit 20"],["storage","n. 存储器，储藏，保管，库存，仓库；存放处；存储","Unit 20"],["stride","n.;v. 大步，步幅，步态，进步；迈大步走，跨过，跨","Unit 20"],["strike","n.;vt.;vi. 罢工，打击，殴打；打，撞击，冲击，侵袭，取消，结算，打掉，罢工，刺透，使生根，遇见；打，打击，抓，罢工，搏动，触礁，敲，响，穿透，打动","Unit 20"],["striking","adj. 醒目的，惊人的，打击的，罢工的；罢工的，罢市的，罢课的","Unit 20"],["string","n.;vt.;vi. 线，细绳，一串，字符串；串起，成串，收紧，缚，扎；成一串；字符串，串","Unit 20"],["structure","n.;vt. 结构，构造，建筑物；构成，组织","Unit 20"],["stun","vt.;n. 使昏迷，使震惊，打昏；昏迷，猛击","Unit 20"],["primary","n.;adj. 最主要者，原色；主要的，初期的，根本的，原始的，首要的，基本的；初等量；主要的；一次的","Unit 20"],["prime","n.;adj.;v. 最佳部分，初期，全盛期；主要的，最初的，根本的；加油启动，灌注，填装","Unit 20"],["primitive","n.;adj. 原始人，早期艺术家；原始的，上古的；图元；原语；基元","Unit 20"],["principle","n. 原则，原理，主义；原理","Unit 20"],["psychiatry","n. 精神病学，精神病治疗；精神病学","Unit 20"],["psychology","n. 心理学，心理状态；心理学","Unit 20"],["liability","n. 责任，债务，倾向；责任，义务，负债","Unit 20"],["liable","adj. 有义务的，应负责的，有...倾向的；有责任的，可受处理的，应受罚的","Unit 20"],["liberal","n.;adj. 自由主义者；慷慨的，不拘泥的，宽大的，自由主义的","Unit 20"],["liberate","vt. 解放，释放，使自由；释出，放出","Unit 20"],["license/licence","n.;vt. 执照，许可证，特许；许可，特许","Unit 20"],["innocent","adj.;n. 无罪的，不懂事的，无知的；天真的人，笨蛋","Unit 20"],["innovation","n. 改革，创新；创新，改革，刷新","Unit 20"],["anguish","n.;vt.;vi. 剧痛，痛苦；使极痛苦；感到痛苦","Unit 20"],["annoy","vt. 使恼怒，骚扰","Unit 20"],["annual","n.;adj. 年刊，年报；每年的，一年一次的，全年的，一年生的","Unit 20"],["anchor","n.;vt. 锚；抛锚停泊，使固定","Unit 20"],["pose","n.;vi.;vt. 姿势，姿态，装模作样，伪装；摆姿势，装模作样，假装；使摆好姿势，提出，造成","Unit 21"],["position","n.;vt. 位置，地位，身分，形势，姿势，立场，职位，状态，阵地；安置，决定...的位置；位置","Unit 21"],["positive","adj. 肯定的，积极的，有把握的；正的，阳性的","Unit 21"],["possess","vt. 持有，占有，拥有，克制，支配，迷住；持有，占有，具有","Unit 21"],["possession","n. 拥有，占有，所有，财产，领土，领地，自制，着迷；占有，持有","Unit 21"],["dilute","vt.;adj. 冲淡，稀释；淡的，稀释的","Unit 21"],["dim","adj.;vt. 暗淡的，模糊的；使暗淡；数据解释模块","Unit 21"],["diminish","v. (使)减少，(使)变小","Unit 21"],["amateur","n. 业余爱好者，外行，爱好者；业余家","Unit 21"],["amaze","vt. 使吃惊","Unit 21"],["ambiguous","adj. 不明确的，模棱两可的；意思含糊的，模棱两可的，暧昧的","Unit 21"],["ambition","n. 野心，志向","Unit 21"],["ambitious","adj. 有野心的，抱负不凡的，雄心勃勃的","Unit 21"],["bubble","n.;vi.;vt. 泡沫；冒泡，沸腾；使冒泡，滔滔不绝地说","Unit 21"],["build","v.;n. 建立，建筑；构造，体格","Unit 21"],["business","n. 生意，事情，业务，商业，商行，职责；企业，商业，营业","Unit 21"],["compress","vt.;vi. 压缩，压紧；受压缩小；压缩程序","Unit 21"],["comprise","vt. 包含，构成","Unit 21"],["conceive","vt.;vi. 构思，认为；怀孕","Unit 21"],["concentrate","n.;v. 浓缩，精选；集中，专心","Unit 21"],["concept","n. 观念，概念；概念","Unit 21"],["conception","n. 观念，概念；妊娠，受孕；概念","Unit 21"],["concern","n.;vt. 关心，忧虑；与...有关，使担心，使挂念","Unit 21"],["concise","adj. 简洁的，简明的","Unit 21"],["concrete","n.;adj.;v. 凝结物，混凝土；具体的，实在的，混凝土的；(使)凝结，用混凝土浇筑","Unit 21"],["conclude","vt.;vi. 结束，作结论，推断；结束，推断","Unit 21"],["conclusion","n. 结论，结尾，推论；缔结，结论，推论","Unit 21"],["concurrent","n.;adj. 同时发生的事件；同时发生的，一致的；并行的；并发的；同时发生的；共行的","Unit 21"],["confer","vt.;vi. 授予，带来；协商","Unit 21"],["conference","n. 会议；会议，讨论会，协商会","Unit 21"],["confess","v. 承认，坦白，忏悔，供认","Unit 21"],["epic","n.;adj. 史诗，叙事诗；史诗的，叙事诗的","Unit 21"],["epidemic","n.;adj. 传染病，流行病；流行的，传染性的","Unit 21"],["episode","n. 插曲，插话，有趣的事件，一段情节；插话，插曲，发作","Unit 21"],["epoch","n. 新纪元，时代，时期","Unit 21"],["indifferent","adj. 漠不关心的，无重要性的，中立的；中性的，无作用的，无亲和力的，淡漠的","Unit 21"],["indignant","adj. 愤怒的，愤慨的","Unit 21"],["indignation","n. 愤怒，愤慨，义愤","Unit 21"],["indispensable","n.;adj. 不可缺少之物；不可缺少的，责无旁贷的，绝对必要的","Unit 21"],["individual","n.;adj. 人，个人，个体；个别的，个人的，独特的","Unit 21"],["mess","n.;vt.;vi. 食堂，伙食，用膳，一份食品，混乱，乱七八糟，困境；将...弄糟，妨碍，使紊乱，使就餐；陷入困境，搞乱，用膳","Unit 21"],["message","n.;vt.;vi. 消息，通讯，讯息，教训，预言，广告词；通知；通报，报告，报信；报文；消息；信息","Unit 21"],["messenger","n. 报信者，使者；使者，送信者，通信员","Unit 21"],["method","n. 方法，办法，条理，秩序；法","Unit 21"],["militant","adj. 好战的","Unit 21"],["military","n.;adj. 军队；军事的，军人的，适于战争的","Unit 21"],["mind","n.;vi.;vt. 思想，愿望，智力，记忆，心理，情绪，理智，主意，心意；介意，注意，留心；注意，留意，专心于，照看，介意","Unit 21"],["redeem","vt. 赎回，挽回，恢复，偿还，补偿；履行(契约)，买回，赎回","Unit 21"],["reduce","vt.;vi. 减少，分解，降低，使衰退，把...分解，把...归纳；减少，减肥，缩小；缩小","Unit 21"],["reduction","n. 减少，缩影，变化；还原","Unit 21"],["refer","vt.;vi. 提交，归诸于，把...提交，使求助于；提到，涉及，查阅，查询，咨询","Unit 21"],["reference","n.;vt.;vi. 参考，索引，参照；给...加上参考资料；引用","Unit 21"],["subject","n.;adj.;adv.;vt. 科目，主题，臣民，主语，题目，(事物的)经受者，学科，受治疗者，原因，理由；服从的，易患...的，隶属的，受支配的；在...条件下；使隶属，使受到；主题，主体","Unit 21"],["Subjective","adj. 主观的，个人的；主观的，自觉的","Unit 21"],["spoil","n.;vt.;vi. 战利品，赃物，奖品，变质，次品；损坏，破坏，溺爱；腐坏，掠夺","Unit 21"],["sponsor","n.;vt. 保证人，赞助者，发起者，倡议者，教父；发起，赞助，倡议","Unit 21"],["spread","n.;adj.;vt.;vi. 传播，散布，伸展；双唇展开的，伸展的；展开，铺开，传播，推广，伸出，涂，敷，延伸；展开，扩大，传开，延伸；展开","Unit 21"],["spur","n.;vt.;vi. 马刺，刺激物，鼓舞；刺激，激励，用马刺策(马)前进；用马刺驱马，疾驰","Unit 21"],["Spy","n.;vt.;vi. 间谍，侦探，侦察；侦察，找出，发现；做密探，侦查","Unit 21"],["stability","n. 安定，稳定性，坚实，巩固；稳定性","Unit 21"],["stable","n.;adj.;vt.;vi. 马房，牛棚；稳定的，安定的，坚固的，坚定的；赶入马房；被关在马厩","Unit 21"],["staff","n.;adj.;vt. 全体人员，工作班子，棍棒，杆，拐杖，支柱，权杖；职员的，雇员的，参谋的；为...配备人员","Unit 21"],["stage","n.;vt.;vi. 阶段，舞台，场所，戏剧，站，驿站，级，层，脚手架；上演，表演，筹划；适于上演，乘驿车旅行","Unit 21"],["trivial","adj. 琐碎的，不重要的，轻微的，平常的","Unit 22"],["try","n.;vt.;vi. 尝试，试验，审理，审判；试，尝试，试验，考验，审问，提炼；尝试，试图","Unit 22"],["tumble","n.;vi.;vt. 跌倒，摔跤，翻斤斗；翻倒，摔倒，倒塌，滚动，翻斤斗，仓促地行动；使摔倒，使滚翻，弄乱","Unit 22"],["turbulent","adj. 狂暴的，骚乱的，紊乱的","Unit 22"],["turnover","n.;adj. 翻倒，翻转，半圆酥饼，营业额，流通，周转；可翻转的","Unit 22"],["type","n.;vi.;vt. 类型，样式，典型，榜样，标志，符号，型，式；打字；作为代表，测定类型，用打字机打；类型；键入；DOS内部命令:在屏幕上显示指定文件的内容","Unit 22"],["typical","adj. 典型的，象征性的；典型的","Unit 22"],["voluntary","adj.;n. 自动的，自愿的，故意的，志愿的，自发的；自愿行动，志愿者，自由调","Unit 22"],["vote","n.;vi.;vt. 投票，选举，选票，表决，选举权，得票数；投票，选举；投票选举，投票决定，公认，使投票","Unit 22"],["vulgar","adj. 粗俗的，庸俗的，普通的，通俗的，方言的；庸俗的，卑下的，粗俗的","Unit 22"],["vulnerable","adj. 易受伤害的，有弱点的，易受影响的，脆弱的，成局的；易损的","Unit 22"],["authority","n. 权力，当权者，当局，权威，专家；代理权，授权，权威","Unit 22"],["auxiliary","n.;adj. 辅助者，辅助物，附属机构，助动词；辅助的，备用的","Unit 22"],["avail","vi.;vt.;n. 有用，有利；有利于；效用，利益","Unit 22"],["available","adj. 可利用的，可获得的，有效的；有效的，可得的","Unit 22"],["critic","n. 批评家，鉴定家","Unit 22"],["critical","adj. 批评的，决定性的，危险的，临界的；危象的；临界的，极期的","Unit 22"],["criticism","n. 批评，评论，非难；批判，批评，评论","Unit 22"],["criticize/-ise","v. 批评，吹毛求疵，非难","Unit 22"],["crucial","adj. 决定性的，重要的，严厉的；十字形的；决断的，定局的","Unit 22"],["culminate","vi.;vt. 到绝顶，达于极点，达到高潮；使到绝顶，使达到高潮","Unit 22"],["culprit","n. 犯人，罪犯，刑事被告；犯罪者，犯人，罪犯","Unit 22"],["cultivate","vt. 培养，耕作","Unit 22"],["culture","n.;vt. 文化，修养，耕种；耕种，培养","Unit 22"],["dual","adj.;n. 双重的，双的；双数","Unit 22"],["dubious","adj. 可疑的，不确定的","Unit 22"],["due","n.;adj. 应得的东西，应付款；到期的，应得的，应付的，约定的","Unit 22"],["durable","adj. 持久的，耐用的","Unit 22"],["duration","n. 持续时间，持续；持续时间","Unit 22"],["duty","n. 责任，关税，职务，尊敬；职责","Unit 22"],["dynamic","adj.;n. 动态的，有活力的，有力的，动力的，不断变化的；动力，动态；动态的","Unit 22"],["extinct","adj. 熄灭的，灭绝的，耗尽的；消灭了的，过时的，无效的","Unit 22"],["extinguish","vt. 熄灭，使消亡，压制，使减色；消灭","Unit 22"],["introduce","vt. 介绍，引入，采用，输入；引进，输入，介绍","Unit 22"],["introduction","n. 介绍，传入，采用，初步","Unit 22"],["invest","vt.;vi. 投资，花费，笼罩，授予；投资，利用","Unit 22"],["invert","adj.;vt.;n. 转化的；使反转，使颠倒，使转化；颠倒的事物；倒置；反转","Unit 22"],["investment","n. 投资；包埋料，围模料，包埋法，围模法","Unit 22"],["investigate","v. 调查，审查","Unit 22"],["mutual","adj. 相互的，共有的；相互的","Unit 22"],["mysterious","adj. 神秘的，难解的，不可思议的","Unit 22"],["mystery","n. 秘密，神秘，奥秘","Unit 22"],["myth","n. 神话，虚构的事，虚构的人","Unit 22"],["noble","n.;adj. 贵族；高贵的，高尚的，贵族的，辉煌的","Unit 22"],["norm","n. 基准，模范，标准，准则，平均数；定额","Unit 22"],["normal","n.;adj. 常态，标准，正常，普通；正常的，正规的，标准的，师范的，正态的；标准，普通","Unit 22"],["normalisation/-zation","n. 常态化，正常化，正规化；归一化；正态化；正火；正火处理","Unit 22"],["note","n.;vt. 笔记，记录，注解，票据，符号，显要，注重，便笺，照会；记录，注解，注意","Unit 22"],["notion","n. 概念，观念，想法，打算，别致的小东西；概念，打算，想法","Unit 22"],["publication","n. 出版物，出版，公布；发布","Unit 22"],["publicity","n. 名声，宣传，公开场合；宣传，广告","Unit 22"],["publish","vt.;vi. 出版，发行，公开，发表，宣传，公布；出版，发行","Unit 22"],["result","n.;vi. 结果，成绩，答案；产生，结果，致使；结果","Unit 22"],["resultant","adj.;n. 结果的，合成的；结果，合力，生成物","Unit 22"],["reveal","vt.;n. 露出，显示，透露，揭露，泄露，(神)启示；窗侧，门侧","Unit 22"],["revelation","n. 揭露，泄露，发觉，默示，启示","Unit 22"],["revenge","n.;vt. 报仇，复仇，报复；报仇，报复","Unit 22"],["revenue","n. 收入，岁入，税收，税务局；岁入，税收，税务局","Unit 22"],["supply","n.;vt.;vi. 补给，供给，供应品；补给，供给，提供，补充；替代","Unit 22"],["support","n.;vt. 支持，支撑，援助，供养，支撑物；支援，支撑，帮助，支持，忍受，供养，证实；后援；支持","Unit 22"],["suppose","vt.;vi. 推想，假设，以为，想像，假定；料想","Unit 22"],["suppress","vt. 镇压，使止住，禁止，抑制，查禁；镇压，平定，禁止出版","Unit 22"],["Supreme","n.;adj. 至高，霸权；至高的，终极的，极端的，最大的","Unit 22"],["system","n. 系统，体系，制度，方式，秩序，分类原则；系统；体制；体系","Unit 22"],["Systematic","adj. 有系统的，分类上的，体系的；系统的，系的，分类的","Unit 22"],["logic","n. 逻辑，逻辑学，推理的方法，推理，逻辑性；逻辑","Unit 22"],["logical","adj. 合乎逻辑的，合理的；逻辑的，符合逻辑的","Unit 22"],["rescue","n.;vt. 援救，解救，营救；援救，救出，营救","Unit 23"],["resent","vt. 愤恨，憎恶，怨恨","Unit 23"],["refresh","vt.;vi. 使清新，使恢复，使生气蓬勃；提起精神，恢复精神，吃点心，喝饮料；刷新，重新整理","Unit 23"],["refute","vt. 反驳，驳斥；驳倒","Unit 23"],["region","n. 区域，地带，地区，领域，范围，区；区，区域","Unit 23"],["regular","adj.;n.;adv. 规则的，常例的，有秩序的，整齐的，等边的，定期的，经常的，合格的，常备军的；正规军，正式队员；经常地；正常体","Unit 23"],["regulate","vt. 管理，控制，调节，调整，校准；控制，管理","Unit 23"],["regulation","n. 规则，管理，调整；调整；规章；规则；调节","Unit 23"],["replace","vt. 代替，替换，放回，归还；替换；DOS外部命令:取代或更新文件","Unit 23"],["reply","n.;vi.;vt. 答复，回答，答辩；答复，回答，回击，反响，答辩；回答；答复","Unit 23"],["report","n.;vt.;vi. 报告，报道，传说，案情报告，爆炸声，成绩单；报告，汇报，转述，报道，揭发，使报到；报告，写报道，报到；报告","Unit 23"],["reporter","n. 记者，报告者；指示器","Unit 23"],["reputation","n. 名誉，名声，声望；名声，名誉，公认证据","Unit 23"],["request","n.;vt. 请求，需要，申请书；请求，要求，邀请；请求","Unit 23"],["require","vt. 需要，命令，要求；需要，要求，命令","Unit 23"],["requirement","n. 需求，必要条件，要求；要求；合同要求","Unit 23"],["assess","vt. 估定，对...征税，评定；估计，估价，确定(税款罚款等)的金额","Unit 23"],["assimilate","vt.;vi. 使同化，吸收，使相拟，把...比作；被吸收，被同化","Unit 23"],["assist","n.;vt.;vi. 帮助，协助；帮助，促进；协助，参加","Unit 23"],["assistance","n. 协助，援助；援助，帮助","Unit 23"],["assistant","n.;adj. 助手，助理，助教；有帮助的，辅助的，助理的","Unit 23"],["assume","vt.;vi. 假定，承担，呈现；装腔作势，僭越","Unit 23"],["assumption","n. 假定，自负，担任，假装；假定，承担","Unit 23"],["contribute","vt.;vi. 有助于，捐助，投稿；出力，捐献，投稿","Unit 23"],["contribution","n. 捐助，捐助之物，贡献；贡献，捐款，补助品","Unit 23"],["controversial","adj. 争论的，论争的，被议论的","Unit 23"],["controversy","n. 论争，辩论，论战，争论；论战，争论，争吵","Unit 23"],["control","n.;vt. 控制，管理，克制，控制器，操纵装置；控制，操纵，抑制；控制；控制器","Unit 23"],["convene","vt.;vi. 集合，召集，召唤；聚集，集合","Unit 23"],["convention","n. 大会，协定，惯例，约定；约定","Unit 23"],["converge","vi.;vt. 聚合，集中于一点；使集合","Unit 23"],["convey","vt. 传达，运输，转让；转让(财产等)，搬运","Unit 23"],["domestic","adj. 家庭的，国内的，驯养的；家庭的，家用的","Unit 23"],["dominant","adj. 占优势的，支配的；优性的，显性的","Unit 23"],["dominate","v. 支配，占优势","Unit 23"],["doom","n.;vt. 厄运，不幸，法律，宣告，判决，死亡；命中注定，判决","Unit 23"],["double","n.;adj.;vt.;vi. 两倍；两倍的，双重的；使加倍；加倍，代替，快步走；双精度型","Unit 23"],["doubt","n.;v. 怀疑，疑惑；怀疑，不信","Unit 23"],["probe","n.;v. 探索，调查，探针，探测器；用探针探测，调查，探索","Unit 23"],["procedure","n. 程序，过程，手续；规程；过程","Unit 23"],["proceed","vi. 继续进行，进行，开始，发出，起诉；所得，收入，收益","Unit 23"],["proceeding","n. 进行，程序，行动，诉讼程序，事项；会议论文集","Unit 23"],["process","n.;vt.;adj. 程序，进行，过程；加工，使...接受处理，对...处置，对...起诉；经加工的，有特殊光效的；进程","Unit 23"],["procession","n. 队伍，连续，列队行进，涌出","Unit 23"],["proclaim","vt. 宣布，公告，宣言，表明，赞扬；宣布，宣告，公布","Unit 23"],["produce","n.;vt.;vi. 生产品，物产，后代；产生，生产，提出，出示；生产，制造","Unit 23"],["product","n. 产品，结果，乘积；生产物","Unit 23"],["production","n. 制造，生产，产物；产生，生成","Unit 23"],["productive","adj. 能生产的，有生产价值的，多产的；产出性的，产生性的","Unit 23"],["productivity","n. 生产力；生产率，生产能力","Unit 23"],["profession","n. 职业，表白，声明；工种；职业","Unit 23"],["professional","n.;adj. 专业人才；专业的，职业的","Unit 23"],["expand","vt.;vi. 使膨胀，详述，扩张；张开，发展；展开；展开；DOS外部命令:将原始DOS磁盘上的压缩文件解压缩并拷贝到硬盘上","Unit 23"],["expansion","n. 扩充，开展，膨胀；扩展","Unit 23"],["expect","vt. 预期，盼望，期待","Unit 23"],["expectation","n. 期待，指望，展望；期望值","Unit 23"],["experience","n.;vt. 经历，经验，体验","Unit 23"],["experiment","n.;vi. 实验，试验，实验仪器；实验，尝试","Unit 23"],["expert","n.;adj. 专家，行家；老练的，内行的，专门的；高级","Unit 23"],["expertise","n. 专家意见，专门技术；专门知识，专家意见","Unit 23"],["expire","vi.;vt. 期满，呼气，断气；呼出","Unit 23"],["instinct","n.;adj. 本能，直觉；充满着的","Unit 23"],["institute","n.;vt. 学会，学院，协会；创立，开始，制定，任命","Unit 23"],["institution","n. 机构，惯例，制度；机关，机构，设施","Unit 23"],["insurance","n. 保险，保险业，保险费；保险","Unit 23"],["insure","vt.;vi. 保险，确保；投保","Unit 23"],["integral","n.;adj. 整体，积分，整数；固有的，整体的，整数的，积分的；积分","Unit 23"],["integrate","vt.;vi.;adj. 综合，使完整，使成整体；成一体；完整的，完全的","Unit 23"],["integrity","n. 正直，廉正，完整；完整性","Unit 23"],["arrears","n. 逾期债款，欠帐；延迟，积欠，尾数","Unit 24"],["xtra","n. 字母X","Unit 24"],["curious","adj. 好奇的，求知的，古怪的","Unit 24"],["curiosity","n. 好奇心，新奇的事物，珍品","Unit 24"],["currency","n. 货币，通货，流通，通用；货币，货币型","Unit 24"],["current","n.;adj. 涌流，趋势，流；流通的，现在的，当前的，流行的；当前的","Unit 24"],["cut","n.;adj.;vt.;vi. 切口，割伤，降低，切，割，砍，削，伤口，削减，缩短，删节，通路；经切割的，缩减的；切，割，减少，刺痛，开辟，雕刻，删节，缩短，停止，排斥，切断，关，显出；切，割，砍，刺痛，相交，抄近路，剪辑；剪切","Unit 24"],["cumulative","adj. 累积的；蓄积的，累积的","Unit 24"],["average","n.;adj.;vt.;vi. 平均，平均数，一般水平，海损；平均的，中等的，平常的；算出...平均数，平均做，均分，使平衡；平均为，呈中间色","Unit 24"],["avoid","vt. 避免，防止，撤消；避免，回避，躲开","Unit 24"],["awake","adj.;vt.;vi. 醒着的；唤醒，唤起，使意识到；醒来，被唤起，意识到","Unit 24"],["award","n.;vt. 奖品，裁定，判决；授予，给予","Unit 24"],["aware","adj. 知道的，有觉悟的","Unit 24"],["awkward","adj. 笨拙的，棘手的","Unit 24"],["extravagant","adj. 奢侈的，挥霍无度的，浪费的","Unit 24"],["xtreme","n. 播放器","Unit 24"],["invisible","adj. 看不见的，无形的；无形的，表面上看不见的，未列在公开帐目的","Unit 24"],["invoke","vt. 祈求，恳求，实行，援引，引起；调用；请求","Unit 24"],["involve","vt. 包括，使陷于，潜心于，包围；累及，牵涉，包含","Unit 24"],["issue","n.;vi.;vt. 发行，问题，后果，流出，出口，争端；发行，流出，造成...结果，传下；使流出，放出，发行，发布，发给","Unit 24"],["item","n. 项目，条款，一则，项；项","Unit 24"],["overturn","n.;vt.;vi. 倾覆，破灭，革命；推翻，颠倒；翻倒","Unit 24"],["overwhelm","vt. 淹没，受打击，制服，压倒，使不知所措；打翻，倾覆，覆盖","Unit 24"],["purchase","n.;vt. 购买，购买品，紧握，绞辘；购买，赢得，努力取得，用滑轮起(锚等)","Unit 24"],["pursue","vt.;vi. 追赶，追踪，追随，追求，实行，继续，从事；追赶，继续","Unit 24"],["pursuit","n. 追踪，追求，追赶，娱乐，职业；追捕，追求","Unit 24"],["puzzle","n.;vt.;vi. 难题，迷惑；使困惑，使为难；迷惑，苦思","Unit 24"],["reverse","n.;adj.;vt.;vi. 相反，背面，倒退，挫折，失败；反面的，相反的，反向的，颠倒的；使颠倒，使逆转，使倒退，使反向；倒退，反向，倒转，反转；反转","Unit 24"],["review","n.;vt.;vi. 检讨，复习，回顾，检阅，评论；温习，检讨，评论，再检察，复审；复习功课，写评论","Unit 24"],["revise","n.;vt. 校订，修正，改样；校订，修正，校正","Unit 24"],["revive","vt.;vi. 使苏醒，使复兴，使振奋，回想起，重播；苏醒，复活，复兴，恢复精神","Unit 24"],["reward","n.;vt. 报酬，酬谢，赏金；奖赏，酬谢，给...应有报应","Unit 24"],["rich","adj. 富裕的，富饶的，浓厚的，贵重的","Unit 24"],["rise","n.;vi.;vt. 上升，增加，上涨，高地，升高，出现；升起，起身，起立，上升，上涨，增长，高耸，起义，浮现；使飞起","Unit 24"],["risk","n.;vt. 冒险，危险，保险额；冒...的危险，冒险干","Unit 24"],["rival","n.;adj. 对手，竞争者；竞争的","Unit 24"],["role","n. 角色，职责，任务；作用，功用","Unit 24"],["roll","n.;vi.;vt. 卷，滚动，名单，案卷，压路机；滚，滚动，飘流，起伏，卷，绕；使滚动，卷，绕","Unit 24"],["root","n.;vt.;vi. 根，根本，根源，基础，底部；使扎根，使固定，根除，肃清，搜出，用鼻拱；生根，固定，源于，用鼻拱土，寻找，捧场，支持","Unit 24"],["route","n.;vt. 路径，途径，路线；确定路线，按规定路线发送；传递，路由设定程序","Unit 24"],["routine","n.;adj. 常规，日常工作，惯例，例行公事；日常的，常规的；例程","Unit 24"],["rule","n.;vt.;vi. 规则，统治，控制，支配，规律，标准，章程，破折号，铅线；规定，统治，管理，控制，支配，裁决；统治，管辖，裁定；规则，水线","Unit 24"],["ruler","n. 统治者，管理者，尺，直尺；划线板；标尺","Unit 24"],["surname","n.;vt. 姓，别号，绰号；呼以姓氏，起绰号","Unit 24"],["surpass","vt. 超越，凌驾，胜过","Unit 24"],["surplus","n.;adj. 剩余，过剩，盈余；过剩的，剩余的","Unit 24"],["Surprise","n.;vt. 惊奇，奇袭，诧异；使惊奇，撞见，奇袭","Unit 24"],["Surveillance","n. 监视，监督；侦测","Unit 24"],["Survival","n.;adj. 生存，残存，幸存者；赖以生存的","Unit 24"],["survive","vt.;vi. 比...活得长，生存，生还，幸免于；活下来，幸存","Unit 24"],["Susceptible","adj. 易受影响的，易感动的，容许...的；易感的，易受影响的，容许","Unit 24"],["suspend","vt.;vi. 悬，吊，使悬浮，暂停，中止，推迟；暂停，中止，悬浮，停止偿付债务；暂停","Unit 24"],["suspicion","n. 怀疑，觉察，嫌疑；怀疑，疑心，嫌疑","Unit 24"],["suspicious","adj. 可疑的，多疑的，怀疑的；怀疑的，令人怀疑的，可疑的","Unit 24"],["Sustain","vt. 承受，支持，供养，继续，忍受，蒙受，证实，准许；持续","Unit 24"],["swarm","n.;vi.;vt. 群，大群，蜂群，分蜂群；分群，群集，聚集一块，云集，攀；挤满，爬，攀","Unit 24"],["swear","vt.;vi.;n. 发誓，咒骂，使宣誓；发誓，诅咒；诅咒，誓言","Unit 24"],["swell","n.;adj.;vi.;vt. 增大，隆起的部分，巨浪，肿胀；优秀的，一流的；增大，膨胀，肿胀，增强，骄傲；使膨胀，使增大，使上涨，使骄傲","Unit 24"],["swing","n.;vi.;vt.;adj. 摇摆，振幅，音律，节奏，涨落，秋千，旋转，行动自由；摇摆，悬挂，旋转，大摇大摆地走，转向；挥舞，使旋转，使转向，悬挂，吊运；旋转的，悬挂的，强节奏爵士音乐的","Unit 24"],["switch","n.;vt.;vi. 开关，电闸，转换，软枝，鞭子，道岔；转变，切换，摆动，转换，使转轨；转换，变换，摆动；开关；翻转；转移","Unit 24"],["project","n.;vt.;vi. 计划，设计，事业；计划，设计，投掷，发射，使凸出，放映；凸出","Unit 25"],["profit","n.;vi.;vt. 利润，赢利，利益；有益，获利，赚钱；有益于","Unit 25"],["profitable","adj. 有利润的，有利益的，赚钱的；有利(可图)的，合算的","Unit 25"],["profound","adj. 极深的，深厚的，深刻的，渊博的","Unit 25"],["program(me)","n.;vt.;vi. 节目，节目单，程序，纲要，大纲，计划；规划，拟...计划；安排节目，编程序；程序","Unit 25"],["progressive","n.;adj. 改革论者，进步论者；前进的，累进的，进步的","Unit 25"],["prohibit","vt. 禁止，阻止；禁止","Unit 25"],["prolong","vt. 延长，拖延，拖长；冷凝管","Unit 25"],["prominent","adj. 卓越的，显著的，突出的，凸出的","Unit 25"],["promising","adj. 有希望的，前途有望的；有希望的","Unit 25"],["promote","vt. 促进，晋升，创办，推销；促进，推广，推销","Unit 25"],["prompt","n.;adj.;vt.;adv. 激励，提示，提醒物，提词，付款期限；迅速的，敏捷的，立刻的，提词员的；激励，鼓动，提示；准时地；提示符；DOS内部命令:设定DOS命令行的提示符","Unit 25"],["proof","n.;adj.;vt. 证据，证明，试验，检验，考验；不能透入的，证明用的，防...的，耐...的；检验，试验，校对，使不被穿透；审稿","Unit 25"],["reservation","n. 保留，预定，保留品，保留地；预定，预约，权益保留","Unit 25"],["reserve","n.;vt. 储备品，贮量，后备军，自然保护区，保留，拘谨，节制，储备金；保留，保存，预订，延期，推迟","Unit 25"],["resist","v.;n. 抵抗，耐得住，抵制，反抗；防染材料","Unit 25"],["resistance","n. 抵抗力，反抗，耐力，阻力，电阻；抵抗；抗性；阻力；抗药性；电阻","Unit 25"],["resistant","n.;adj. 抵抗者，反抗者；抵抗的，反抗的，耐...的","Unit 25"],["resilient","adj. 弹回的，有弹力的；回弹的，回能的","Unit 25"],["resort","n.;vi. 度假胜地，手段，凭借，常去之地；诉诸，常去","Unit 25"],["resource","n. 资源，财力，办法，策略，急智，消遣；资源","Unit 25"],["respect","n.;vt. 尊敬，尊重，问候；尊敬，注意，遵守","Unit 25"],["respective","adj. 分别的，各自的","Unit 25"],["respond","vt.;vi. 以...回答；回答，响应，回报，有反应，承担责任","Unit 25"],["response","n. 反应，回答，响应；应答","Unit 25"],["responsibility","n. 责任，职责，负担，可靠性；职责","Unit 25"],["responsible","adj. 有责任的，负责的，责任重大的；应负责任的，有责任的，能履行责任的","Unit 25"],["succeed","vi.;vt. 成功，继承，继续；继承，接替","Unit 25"],["success","n. 成功，成就，胜利","Unit 25"],["Successful","adj. 成功的，一帆风顺的，顺利的；成功的","Unit 25"],["succession","n. 连续，继承权，继位，演替，地层次序；继承，继承权，继位","Unit 25"],["successive","adj. 继承的，连续的；接续承运人；连续的","Unit 25"],["successor","n. 继承者，接任者；后继","Unit 25"],["suck","vt.;vi.;n. 吸，吮，吸入，吮吸，吸收；吸，吸奶；吸，吸入，吮吸","Unit 25"],["sue","vt.;vi. 控告，起诉，请求；提出诉讼，提出请求","Unit 25"],["suffer","vt.;vi. 遭受，经历，忍受；受痛苦，受损害","Unit 25"],["suffice","vi.;vt. 足够，有能力；满足","Unit 25"],["sufficient","adj. 充分的，足够的","Unit 25"],["suggest","vt. 提议，建议，促成，暗示，启发，使人想起；建议，提出，提议","Unit 25"],["SUggestion","n. 提议，意见；暗示","Unit 25"],["suicide","n.;v.;adj. 自杀，自杀者；自杀；自杀的","Unit 25"],["suit","n.;vt.;vi. 套装，诉讼，请求，起诉，套，组；适合，使适应；合适，相称","Unit 25"],["suitable","adj. 适当的，相配的；合适的，适宜的，适当的","Unit 25"],["super","n.;adj.;adv. 跑龙套角色，冗员，特级品，特大号，管理人；上等的，特大的，超级的，极好的，十分的，过分的；非常","Unit 25"],["Superb","adj. 极度的，华丽的，极好的","Unit 25"],["Superficial","n.;adj. 表面，外表；表面的，肤浅的，面积的","Unit 25"],["superfluous","adj. 多余的，过剩的","Unit 25"],["Superior","n.;adj. 长者，占优势的人，上级；上级的，出众的，高傲的","Unit 25"],["superiority","n. 优越，高傲；优越性","Unit 25"],["supervise","v. 监督，管理，指导","Unit 25"],["trigger","n.;vt.;vi. 触发器，扳机；触发，发射，引起；松开扳柄；切换开关","Unit 25"],["triumph","n.;vi. 凯旋，胜利，欢欣；得胜，成功","Unit 25"],["assure","vt. 保证，使确信，弄清楚，担保；确信，保证，保障","Unit 25"],["assurance","n. 保证，把握，信心，保险；保证，担保，保险","Unit 25"],["astonish","vt. 使惊讶","Unit 25"],["atmosphere","n. 大气，空气，气氛；大气；大气压","Unit 25"],["council","n. 会议，委员会；委员会","Unit 25"],["counsel","n.;v. 商议，忠告，法律顾问；商议，劝告","Unit 25"],["dramatic","adj. 戏剧性的，生动的","Unit 25"],["exploit","n.;vt. 功绩，勋绩；开发，利用，开拓，剥削","Unit 25"],["explore","v. 探险，探测，探究","Unit 25"],["intellectual","n.;adj. 有知识者，知识分子，凭理智做事者；智力的，用脑力的，聪明的","Unit 25"],["intelligence","n. 智力，情报，信息；智力","Unit 25"],["intelligent","adj. 聪明的，智能的，了解的","Unit 25"],["intelligible","adj. 可理解的，易理解的，纯概念性的","Unit 25"],["polish","adj.;n.;vt.;vi. 波兰的；波兰人，上光剂，光泽，优雅；擦亮，擦去，使完美；擦亮，变得光亮","Unit 26"],["point","n.;vt.;vi. 点，小数点，标点，地点，要点，特点，尖端，分数，得分，穴位；弄尖，强调，指出，加标点于，瞄准；指，指向，表明","Unit 26"],["proper","adj.;adv. 适当的，固有的，高尚的，专属的；完全地，彻底地","Unit 26"],["property","n. 财产，所有权，性质，属性；属性","Unit 26"],["proportion","n.;vt. 比例，比率，均衡，部分，面积；使成比例，使均衡","Unit 26"],["proposal","n. 提议，计划，求婚；提案，申请，投标","Unit 26"],["propose","vt.;vi. 计划，打算，建议，提议，求(婚)；打算，求婚","Unit 26"],["proposition","n.;vt. 建议，命题，主张；向...提议，向...提出猥亵的要求","Unit 26"],["prospect","n.;vt.;vi. 景色，展望；勘探，勘察；勘探，有前途","Unit 26"],["prospective","adj. 预期的，将来的；预期的，未来的","Unit 26"],["protocol","n.;v. 草案，礼仪，协议；拟定；协议，协议列表实用程序","Unit 26"],["proximate","adj. 最近的，将临的，近似的；近接的，邻近的","Unit 26"],["restore","vt.;vi. 回复，恢复，归还，修补，修复；还原；还原；DOS外部命令:从备份盘中取回文件","Unit 26"],["restrain","vt. 抑制，阻止，束缚；抑制，遏制，制止","Unit 26"],["restraint","n. 抑制，克制，束缚；约束，拘束","Unit 26"],["restrict","vt. 限制，限定，约束；限制","Unit 26"],["attach","vt.;vi. 附上，使依附，使附属，使喜爱，系，缚；附属，归属，联系在一起；挂接服务器命令，关联，挂接，附加","Unit 26"],["attack","n.;vt.;vi. 攻击，抨击；攻击，抨击，动手干；攻击","Unit 26"],["attain","vt.;vi. 达到，获得；达到","Unit 26"],["attempt","n.;vt. 尝试，企图","Unit 26"],["attend","vt.;vi. 参加，照料，伴随；专心于，照顾，服侍，出席","Unit 26"],["attention","n. 注意，注意力；引起注意信号","Unit 26"],["attitude","n. 态度，看法，姿势；体态，姿势，态度","Unit 26"],["courtesy","n. 礼貌，谦恭，好意；优待，礼貌，恩惠","Unit 26"],["cover","n.;vt.;vi. 盖子，封面，藉口；覆盖，掩饰，保护，掩护，包括；覆盖","Unit 26"],["create","vt. 创造，建造，引起，任命","Unit 26"],["creative","adj. 有创造力的，创作的，产生的","Unit 26"],["credit","n.;vt. 信用，信任，荣誉，贷款，学分；归功于，赞颂，信任，相信；信用量","Unit 26"],["crisis","n. 危机，危险期，紧要关头；危象；骤退，临界，极期","Unit 26"],["drive","n.;vt.;vi. 驾车，快车道，推进力，驱动，动力，击球，驱动器；开车，驱使，推动，驾驶；开车，猛击，飞跑；驱动器","Unit 26"],["export","n.;vt.;vi. 输出品，输出；输出，出口；输出物资；导出","Unit 26"],["expose","vt. 使暴露，使曝光，揭穿，陈列；暴露，露置","Unit 26"],["exposure","n. 暴露，揭发，揭露；曝光量；照射；照射量","Unit 26"],["expression","n. 表达，表现，词语，措辞；表达式","Unit 26"],["extend","v. 扩充，延伸，伸展，扩大；扩展","Unit 26"],["extension","n.;adj. 延长，扩充，范围，扩展名；伸缩的；扩展名，扩充名","Unit 26"],["extensive","adj. 广的，广泛的，多方面的；广大的，扩大的","Unit 26"],["extent","n. 范围，程度，区域；范围","Unit 26"],["humanity","n. 人性，人类，博爱","Unit 26"],["humble","adj.;vt. 低下的，谦逊的，粗陋的；使...卑下，降低...地位，贬抑","Unit 26"],["intend","vt. 计划，打算，意思是；想要，打算，意旨","Unit 26"],["intention","n. 意图，目的，含义；愈合，意向","Unit 26"],["intense","adj. 非常的，强烈的，紧张的，热情的；强的","Unit 26"],["intensity","n. 强烈，紧张，强度；强度；亮度","Unit 26"],["intensive","adj.;n. 加强的，内涵的，集中的；加强器","Unit 26"],["interact","vi.;n. 互相影响，交互作用；幕间剧，幕间休息","Unit 26"],["intercourse","n. 交往，交流；交际，往来","Unit 26"],["interest","n.;vt. 兴趣，嗜好，利息，利益，爱好，趣味，势力；使感兴趣，与...有关系","Unit 26"],["interior","n.;adj. 内部，内政；内部的，心灵的，内地的，内政的","Unit 26"],["internal","adj. 内在的，国内的；内的，内部的","Unit 26"],["international","adj.;n. 国际的；国别设定","Unit 26"],["interpret","vt.;vi. 解释，演出，翻译，理解；翻译，解释","Unit 26"],["lose","vt.;vi. 遗失，损失，丢失，使失去，错过，浪费，迷失，使迷路，输去，使沉溺于；受损失，失败","Unit 26"],["loss","n. 损失，遗失，失败，输，错过，伤亡；损失；损耗","Unit 26"],["low","n.;adj.;adv.;vi. 低点，低价，低，牛叫声；低的，消沉的，低等的，浅的，卑贱的；低下地，谦卑地，低；牛叫","Unit 26"],["lower","adj.;vi.;vt. 低的，下级的，下层的；降低，跌落，减弱；放下，降下，减弱，贬低","Unit 26"],["lucrative","adj. 有利益的，获利的，合算的","Unit 26"],["nerve","n.;vt. 精神，勇气，叶脉，神经；鼓起勇气","Unit 26"],["nervous","adj. 神经紧张的，不安的，神经的；神经的；神经质的，神经过敏的","Unit 26"],["nevertheless","adv.;conj. 然而，虽然如此；然而","Unit 26"]];
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => [...document.querySelectorAll(selector)];
+    const REQUIRED_KNOWN_COUNT = 3;
+    const VALID_MODES = ['new', 'today', 'yesterday'];
+    const CATALOG_VERSION = '2026-06-22-26-units-v2';
+    const PREVIOUS_CATALOG_SIZES = { '2026-06-22-26-units': 1766 };
+    const localDate = (date = new Date()) => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+    const today = () => localDate();
+    const makeId = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+    const addDays = (dateString, days) => {
+      const date = new Date(`${dateString}T12:00:00`);
+      date.setDate(date.getDate() + days);
+      return localDate(date);
+    };
+
+    function defaultDailyLearning(selectedUnit) {
+      return {
+        date: today(),
+        selectedUnit,
+        newSeen: [],
+        completedUnits: {},
+        todayReview: [],
+        yesterdayReview: []
+      };
+    }
+
+    function defaultState() {
+      const created = today();
+      const firstUnit = SAMPLE_WORDS[0]?.[2] || DEFAULT_UNIT;
+      return {
+        version: 1,
+        catalogVersion: CATALOG_VERSION,
+        words: SAMPLE_WORDS.map(([english, chinese, unit]) => ({ id: makeId(), english, chinese, unit, level: 0, lastReview: null, nextReview: created, createdAt: created })),
+        stats: {},
+        settings: { studyMode: 'new', selectedUnit: firstUnit },
+        dailyLearning: defaultDailyLearning(firstUnit)
+      };
+    }
+
+    function normalizePool(pool, validIds, fallbackDate) {
+      if (!Array.isArray(pool)) return [];
+      const seen = new Set();
+      return pool.map((entry) => ({
+        wordId: String(entry?.wordId || entry?.id || ''),
+        knownCount: Math.max(0, Number(entry?.knownCount) || 0),
+        addedDate: entry?.addedDate || fallbackDate
+      })).filter((entry) => validIds.has(entry.wordId) && !seen.has(entry.wordId) && seen.add(entry.wordId));
+    }
+
+    function normalizeState(raw) {
+      const date = today();
+      const words = (Array.isArray(raw.words) ? raw.words : []).filter(Boolean).map((word) => ({
+        id: String(word.id || makeId()),
+        english: String(word.english || '').trim(),
+        chinese: String(word.chinese || '').trim(),
+        // 兼容旧版数据：缺少 unit 的单词自动归入“未分类”。
+        unit: String(word.unit || DEFAULT_UNIT).trim() || DEFAULT_UNIT,
+        level: Math.max(0, Math.min(REVIEW_INTERVALS.length, Number(word.level) || 0)),
+        lastReview: word.lastReview || null,
+        nextReview: word.nextReview || word.lastReview || date,
+        createdAt: word.createdAt || date
+      })).filter((word) => word.english && word.chinese);
+      const validIds = new Set(words.map((word) => word.id));
+      const settings = raw.settings && typeof raw.settings === 'object' ? raw.settings : {};
+      const dailyRaw = raw.dailyLearning && typeof raw.dailyLearning === 'object' ? raw.dailyLearning : {};
+      const selected = String(dailyRaw.selectedUnit || settings.selectedUnit || words[0]?.unit || DEFAULT_UNIT);
+      const oldMode = settings.studyMode;
+      const mode = VALID_MODES.includes(oldMode) ? oldMode : oldMode === 'global' ? 'yesterday' : 'new';
+      return {
+        version: 1,
+        catalogVersion: raw.catalogVersion || null,
+        words,
+        stats: raw.stats && typeof raw.stats === 'object' ? raw.stats : {},
+        settings: { studyMode: mode, selectedUnit: selected },
+        dailyLearning: {
+          date: dailyRaw.date || date,
+          selectedUnit: selected,
+          newSeen: Array.isArray(dailyRaw.newSeen) ? dailyRaw.newSeen.map(String).filter((id) => validIds.has(id)) : [],
+          completedUnits: dailyRaw.completedUnits && typeof dailyRaw.completedUnits === 'object' ? dailyRaw.completedUnits : {},
+          todayReview: normalizePool(dailyRaw.todayReview, validIds, date),
+          yesterdayReview: normalizePool(dailyRaw.yesterdayReview, validIds, date)
+        }
+      };
+    }
+
+    function catalogKey(english, unit) { return `${unit}\u0000${english.toLowerCase()}`; }
+
+    function mergeWithCatalog(savedState) {
+      // 新版内置词库更新释义和顺序，同时保留旧词的 ID、等级及复习日期。
+      const savedMap = new Map(savedState.words.map((word) => [catalogKey(word.english, word.unit), word]));
+      const catalogKeys = new Set();
+      const created = today();
+      const merged = SAMPLE_WORDS.map(([english, chinese, unit]) => {
+        const key = catalogKey(english, unit);
+        catalogKeys.add(key);
+        const old = savedMap.get(key);
+        return old ? { ...old, english, chinese, unit } : { id: makeId(), english, chinese, unit, level: 0, lastReview: null, nextReview: created, createdAt: created };
+      });
+      // 从上一版内置词库升级时，不把已被纠正的旧拼写当成手工词追加回来。
+      const previousSize = PREVIOUS_CATALOG_SIZES[savedState.catalogVersion];
+      const possibleManualWords = previousSize == null ? savedState.words : savedState.words.slice(previousSize);
+      const manualWords = possibleManualWords.filter((word) => !catalogKeys.has(catalogKey(word.english, word.unit)));
+      savedState.words = [...merged, ...manualWords];
+      savedState.catalogVersion = CATALOG_VERSION;
+      return savedState;
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && Array.isArray(saved.words)) {
+          const normalized = normalizeState(saved);
+          return normalized.catalogVersion === CATALOG_VERSION ? normalized : mergeWithCatalog(normalized);
+        }
+      } catch (error) { console.warn('读取本地数据失败：', error); }
+      return defaultState();
+    }
+
+    let state = loadState();
+    let studyMode = VALID_MODES.includes(state.settings.studyMode) ? state.settings.studyMode : 'new';
+    let selectedUnit = state.dailyLearning.selectedUnit || state.words[0]?.unit || DEFAULT_UNIT;
+    let queue = [];
+    let currentId = null;
+    let decisionStage = 'first';
+    let firstChoice = null;
+    let meaningVisible = false;
+    let sessionInitial = 0;
+    let toastTimer;
+
+    function getUnits() {
+      // Set 保持词库中首次出现的顺序，Unit 10 不会排到 Unit 2 前面。
+      const units = [...new Set(state.words.map((word) => word.unit || DEFAULT_UNIT))];
+      return units.length ? units : [DEFAULT_UNIT];
+    }
+
+    function nextUnitAfter(unit) {
+      const units = getUnits();
+      const index = units.indexOf(unit);
+      return units[(index + 1 + units.length) % units.length] || units[0];
+    }
+
+    function upsertPool(pool, entry) {
+      const existing = pool.find((item) => item.wordId === entry.wordId);
+      if (existing) {
+        existing.knownCount = Math.max(existing.knownCount, entry.knownCount || 0);
+        return existing;
+      }
+      const created = { wordId: entry.wordId, knownCount: entry.knownCount || 0, addedDate: entry.addedDate || today() };
+      pool.push(created);
+      return created;
+    }
+
+    function prepareDailyLearning() {
+      const daily = state.dailyLearning || defaultDailyLearning(selectedUnit);
+      state.dailyLearning = daily;
+      if (daily.date !== today()) {
+        daily.todayReview.forEach((entry) => upsertPool(daily.yesterdayReview, entry));
+        const completedPreviousTask = daily.completedUnits[daily.selectedUnit] === daily.date;
+        daily.selectedUnit = completedPreviousTask ? nextUnitAfter(daily.selectedUnit) : daily.selectedUnit;
+        daily.date = today();
+        daily.newSeen = [];
+        daily.todayReview = [];
+      }
+      const validIds = new Set(state.words.map((word) => word.id));
+      daily.newSeen = daily.newSeen.filter((id) => validIds.has(id));
+      daily.todayReview = daily.todayReview.filter((entry) => validIds.has(entry.wordId));
+      daily.yesterdayReview = daily.yesterdayReview.filter((entry) => validIds.has(entry.wordId));
+      if (!getUnits().includes(daily.selectedUnit)) daily.selectedUnit = getUnits()[0];
+      selectedUnit = daily.selectedUnit;
+    }
+
+    prepareDailyLearning();
+
+    function saveState() {
+      state.settings = { studyMode, selectedUnit };
+      state.dailyLearning.selectedUnit = selectedUnit;
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+      catch (error) {
+        console.error('LocalStorage 保存失败：', error);
+        showToast('保存失败，请检查浏览器存储空间');
+      }
+    }
+
+    function getTodayStats() {
+      const key = today();
+      if (!state.stats[key]) state.stats[key] = { reviewed: 0, known: 0, unknown: 0 };
+      return state.stats[key];
+    }
+
+    function isDue(word) { return !word.nextReview || word.nextReview <= today(); }
+    function currentWord() { return state.words.find((word) => word.id === currentId); }
+    function poolEntry(pool, id) { return pool.find((entry) => entry.wordId === id); }
+
+    function movePoolEntryToEnd(pool, id) {
+      const index = pool.findIndex((entry) => entry.wordId === id);
+      if (index < 0) return;
+      const [entry] = pool.splice(index, 1);
+      pool.push(entry);
+    }
+
+    function removePoolEntry(pool, id) {
+      const index = pool.findIndex((entry) => entry.wordId === id);
+      if (index >= 0) pool.splice(index, 1);
+    }
+
+    function buildQueue() {
+      const daily = state.dailyLearning;
+      if (studyMode === 'new') {
+        const completedToday = daily.completedUnits[selectedUnit] === today();
+        const seen = new Set(daily.newSeen);
+        queue = completedToday ? [] : state.words.filter((word) => word.unit === selectedUnit && !seen.has(word.id)).map((word) => word.id);
+      } else if (studyMode === 'today') {
+        queue = daily.todayReview.map((entry) => entry.wordId);
+      } else {
+        const carryIds = daily.yesterdayReview.map((entry) => entry.wordId);
+        const carrySet = new Set(carryIds);
+        const dueIds = state.words.filter((word) => word.lastReview && word.lastReview < today() && isDue(word) && !carrySet.has(word.id)).map((word) => word.id);
+        queue = [...carryIds, ...dueIds];
+      }
+      sessionInitial = queue.length;
+      pickNext();
+    }
+
+    function resetDecision() {
+      decisionStage = 'first';
+      firstChoice = null;
+      meaningVisible = false;
+    }
+
+    function pickNext() {
+      currentId = queue.shift() || null;
+      resetDecision();
+      renderStudy();
+    }
+
+    function scheduleKnown(word) {
+      word.level = Math.min(word.level + 1, REVIEW_INTERVALS.length);
+      const interval = REVIEW_INTERVALS[Math.max(0, word.level - 1)];
+      word.lastReview = today();
+      word.nextReview = addDays(today(), interval);
+      return interval;
+    }
+
+    function scheduleUnknown(word) {
+      word.level = 0;
+      word.lastReview = today();
+      word.nextReview = today();
+    }
+
+    function completeUnitIfNeeded() {
+      const daily = state.dailyLearning;
+      const unitIds = state.words.filter((word) => word.unit === selectedUnit).map((word) => word.id);
+      if (unitIds.length && unitIds.every((id) => daily.newSeen.includes(id))) {
+        daily.completedUnits[selectedUnit] = today();
+        showToast(`${selectedUnit} 今日任务已完成`);
+      }
+    }
+
+    function finishAnswer(finalKnown) {
+      const word = currentWord();
+      if (!word) return;
+      const daily = state.dailyLearning;
+      const stats = getTodayStats();
+      stats.reviewed += 1;
+      stats[finalKnown ? 'known' : 'unknown'] += 1;
+
+      if (studyMode === 'new') {
+        if (!daily.newSeen.includes(word.id)) daily.newSeen.push(word.id);
+        if (finalKnown) {
+          const interval = scheduleKnown(word);
+          showToast(`${interval} 天后进入遗忘曲线回顾`);
+        } else {
+          scheduleUnknown(word);
+          upsertPool(daily.todayReview, { wordId: word.id, knownCount: 0, addedDate: today() });
+          showToast('已加入今日复习');
+        }
+        completeUnitIfNeeded();
+      } else if (studyMode === 'today') {
+        const entry = poolEntry(daily.todayReview, word.id);
+        if (finalKnown && entry) entry.knownCount += 1;
+        if (finalKnown && entry?.knownCount >= REQUIRED_KNOWN_COUNT) {
+          removePoolEntry(daily.todayReview, word.id);
+          const interval = scheduleKnown(word);
+          showToast(`已连续确认 ${REQUIRED_KNOWN_COUNT} 次，${interval} 天后回顾`);
+        } else {
+          if (!finalKnown) scheduleUnknown(word); else { word.lastReview = today(); word.nextReview = today(); }
+          movePoolEntryToEnd(daily.todayReview, word.id);
+          queue.push(word.id);
+          showToast(finalKnown ? `已确认 ${entry?.knownCount || 0}/${REQUIRED_KNOWN_COUNT}` : '已移到队列末尾');
+        }
+      } else {
+        const entry = poolEntry(daily.yesterdayReview, word.id);
+        if (entry) {
+          if (finalKnown) entry.knownCount += 1;
+          if (finalKnown && entry.knownCount >= REQUIRED_KNOWN_COUNT) {
+            removePoolEntry(daily.yesterdayReview, word.id);
+            const interval = scheduleKnown(word);
+            showToast(`回顾完成，${interval} 天后再复习`);
+          } else {
+            if (!finalKnown) scheduleUnknown(word); else { word.lastReview = today(); word.nextReview = today(); }
+            movePoolEntryToEnd(daily.yesterdayReview, word.id);
+            queue.push(word.id);
+            showToast(finalKnown ? `已确认 ${entry.knownCount}/${REQUIRED_KNOWN_COUNT}` : '已移到队列末尾');
+          }
+        } else if (finalKnown) {
+          const interval = scheduleKnown(word);
+          showToast(`${interval} 天后再复习`);
+        } else {
+          scheduleUnknown(word);
+          upsertPool(daily.yesterdayReview, { wordId: word.id, knownCount: 0, addedDate: today() });
+          queue.push(word.id);
+          showToast('已移到队列末尾');
+        }
+      }
+
+      saveState();
+      currentId = null;
+      pickNext();
+    }
+
+    function answer(known) {
+      if (!currentWord()) return;
+      if (decisionStage === 'first') {
+        firstChoice = known;
+        decisionStage = 'confirm';
+        meaningVisible = true;
+        renderStudy();
+        return;
+      }
+      // 两次均选择“认识”才算认识，任意一次“不认识”都按不认识处理。
+      finishAnswer(Boolean(firstChoice && known));
+    }
+
+    function fillUnitSelect(select, includeNew = false) {
+      const previous = select.value;
+      select.replaceChildren();
+      getUnits().forEach((unit) => {
+        const option = document.createElement('option');
+        option.value = unit;
+        option.textContent = unit;
+        select.append(option);
+      });
+      if (includeNew) {
+        const option = document.createElement('option');
+        option.value = '__new__';
+        option.textContent = '＋ 新建单元';
+        select.append(option);
+      }
+      const preferred = getUnits().includes(previous) ? previous : selectedUnit;
+      select.value = getUnits().includes(preferred) ? preferred : getUnits()[0];
+    }
+
+    function syncModeControls() {
+      if (!getUnits().includes(selectedUnit)) selectedUnit = getUnits()[0];
+      fillUnitSelect($('#studyUnitSelect'));
+      $('#studyUnitSelect').value = selectedUnit;
+      const completedToday = Object.values(state.dailyLearning.completedUnits).includes(today());
+      $('#studyUnitSelect').disabled = completedToday;
+      $('#studyUnitWrap').classList.toggle('hidden', studyMode !== 'new');
+      $$('.mode-btn').forEach((button) => button.classList.toggle('active', button.dataset.mode === studyMode));
+      const hints = {
+        new: completedToday ? `${selectedUnit} 已完成，明天自动进入下一单元。` : '按词库顺序学习今日单元，不认识的词自动加入今日复习。',
+        today: '临时生词需两次判断都认识，并累计确认 3 次后移除。',
+        yesterday: '优先处理昨日未完成生词，再按艾宾浩斯曲线回顾到期词。'
+      };
+      $('#modeHint').textContent = hints[studyMode];
+    }
+
+    function remainingCount() {
+      if (studyMode === 'today') return state.dailyLearning.todayReview.length;
+      if (studyMode === 'yesterday') return new Set([currentId, ...queue].filter(Boolean)).size;
+      return queue.length + (currentId ? 1 : 0);
+    }
+
+    function renderStudy() {
+      syncModeControls();
+      const word = currentWord();
+      $('#studyArea').classList.toggle('hidden', !word);
+      $('#emptyStudy').classList.toggle('hidden', Boolean(word));
+      const remaining = remainingCount();
+      const badgeLabels = { new: '今日需背', today: '今日复习', yesterday: '昨日回顾' };
+      $('#dueBadge').textContent = `${badgeLabels[studyMode]} ${remaining}`;
+      $('#restartUnitBtn').classList.add('hidden');
+      const emptyCopy = {
+        new: ['今日单元已完成', '已标记完成，明天会自动进入下一个单元。'],
+        today: ['今日临时复习已完成', '不认识的单词已经全部确认掌握。'],
+        yesterday: ['昨日回顾已完成', '跨日生词和艾宾浩斯到期词都已复习。']
+      }[studyMode];
+      $('#emptyTitle').textContent = emptyCopy[0];
+      $('#emptyHint').textContent = emptyCopy[1];
+      const stats = getTodayStats();
+      $('#statReviewed').textContent = stats.reviewed;
+      $('#statKnown').textContent = stats.known;
+      $('#statUnknown').textContent = stats.unknown;
+      let total = sessionInitial;
+      let completed = Math.max(0, total - remaining);
+      if (studyMode === 'new') {
+        const unitWords = state.words.filter((item) => item.unit === selectedUnit);
+        total = unitWords.length;
+        completed = unitWords.filter((item) => state.dailyLearning.newSeen.includes(item.id)).length;
+      }
+      $('#progressText').textContent = `${completed} / ${total}`;
+      $('#progressBar').style.width = total ? `${Math.min(100, completed / total * 100)}%` : '100%';
+      if (!word) return;
+      $('#wordText').textContent = word.english;
+      $('#meaningText').textContent = word.chinese;
+      $('#levelBadge').textContent = `${word.unit} · 等级 ${word.level}`;
+      $('#meaningText').classList.toggle('hidden', !meaningVisible);
+      $('#knownBtn').textContent = decisionStage === 'first' ? '认识' : '确认认识';
+      $('#unknownBtn').textContent = decisionStage === 'first' ? '不认识' : '仍不认识';
+      $('#tapHint').textContent = decisionStage === 'first'
+        ? '先判断是否认识，选择后显示释义'
+        : firstChoice ? '请对照释义再次确认' : '第一次选择了不认识，本次将记为不认识';
+    }
+
+    function renderUnitStats() {
+      const container = $('#unitStats');
+      container.replaceChildren();
+      getUnits().forEach((unit) => {
+        const words = state.words.filter((word) => word.unit === unit);
+        const mastered = words.filter((word) => word.level >= MASTERED_LEVEL).length;
+        const completedDate = state.dailyLearning.completedUnits[unit];
+        const row = document.createElement('div');
+        row.className = 'unit-stat flex items-center justify-between gap-3';
+        const name = document.createElement('span');
+        name.className = 'font-semibold truncate';
+        name.textContent = completedDate ? `✓ ${unit}` : unit;
+        const stat = document.createElement('span');
+        stat.className = 'text-sm text-slate-500 shrink-0';
+        stat.textContent = `共 ${words.length} · 已掌握 ${mastered}${completedDate ? ` · ${completedDate}` : ''}`;
+        row.append(name, stat);
+        container.append(row);
+      });
+    }
+
+    function renderWordList() {
+      const keyword = $('#searchInput').value.trim().toLowerCase();
+      const words = state.words.filter((word) => `${word.english} ${word.chinese} ${word.unit}`.toLowerCase().includes(keyword));
+      $('#wordCount').textContent = `共 ${state.words.length} 个单词`;
+      renderUnitStats();
+      const list = $('#wordList');
+      list.replaceChildren();
+      if (!words.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = keyword ? '没有匹配的单词' : '词库还是空的';
+        list.append(empty);
+        return;
+      }
+      words.forEach((word) => {
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        const info = document.createElement('div');
+        info.className = 'min-w-0 flex-1';
+        const english = document.createElement('div');
+        english.className = 'font-semibold truncate';
+        english.textContent = word.english;
+        const chinese = document.createElement('div');
+        chinese.className = 'text-sm text-slate-500 truncate';
+        chinese.textContent = word.chinese;
+        const meta = document.createElement('div');
+        meta.className = 'text-xs text-slate-400 mt-1';
+        meta.textContent = `${word.unit} · 等级 ${word.level} · ${isDue(word) ? '今日待复习' : `${word.nextReview} 复习`}`;
+        info.append(english, chinese, meta);
+        const remove = document.createElement('button');
+        remove.className = 'icon-btn shrink-0';
+        remove.textContent = '删除';
+        remove.addEventListener('click', () => deleteWord(word.id));
+        row.append(info, remove);
+        list.append(row);
+      });
+    }
+
+    function deleteWord(id) {
+      const word = state.words.find((item) => item.id === id);
+      if (!word || !confirm(`确定删除“${word.english}”吗？`)) return;
+      state.words = state.words.filter((item) => item.id !== id);
+      state.dailyLearning.newSeen = state.dailyLearning.newSeen.filter((item) => item !== id);
+      removePoolEntry(state.dailyLearning.todayReview, id);
+      removePoolEntry(state.dailyLearning.yesterdayReview, id);
+      queue = queue.filter((item) => item !== id);
+      if (currentId === id) currentId = null;
+      if (!getUnits().includes(selectedUnit)) selectedUnit = getUnits()[0];
+      saveState();
+      buildQueue();
+      renderWordList();
+      showToast('已删除');
+    }
+
+    function switchView(view) {
+      ['study', 'words', 'data'].forEach((name) => $(`#${name}View`).classList.toggle('hidden', name !== view));
+      $$('.nav-btn').forEach((button) => button.classList.toggle('active', button.dataset.view === view));
+      if (view === 'words') renderWordList();
+      if (view === 'study') renderStudy();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showToast(message) {
+      clearTimeout(toastTimer);
+      $('#toast').textContent = message;
+      $('#toast').classList.remove('hidden');
+      toastTimer = setTimeout(() => $('#toast').classList.add('hidden'), 1800);
+    }
+
+    function openModal() {
+      fillUnitSelect($('#unitInput'), true);
+      $('#unitInput').value = getUnits().includes(selectedUnit) ? selectedUnit : getUnits()[0];
+      $('#newUnitInput').classList.add('hidden');
+      $('#addModal').classList.remove('hidden');
+      setTimeout(() => $('#englishInput').focus(), 50);
+    }
+    function closeModal() {
+      $('#addModal').classList.add('hidden');
+      $('#addForm').reset();
+      $('#newUnitInput').classList.add('hidden');
+    }
+
+    function exportBackup() {
+      const backup = { ...state, exportedAt: new Date().toISOString(), app: '每日单词' };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `每日单词备份-${today()}.json`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('备份已导出');
+    }
+
+    async function importBackup(file) {
+      try {
+        const raw = JSON.parse(await file.text());
+        if (!raw || !Array.isArray(raw.words)) throw new Error('缺少 words 数组');
+        const imported = normalizeState(raw);
+        if (!confirm(`备份中有 ${imported.words.length} 个单词。导入会覆盖当前数据，是否继续？`)) return;
+        state = imported;
+        studyMode = VALID_MODES.includes(state.settings.studyMode) ? state.settings.studyMode : 'new';
+        selectedUnit = state.dailyLearning.selectedUnit;
+        prepareDailyLearning();
+        saveState();
+        buildQueue();
+        renderWordList();
+        showToast('导入成功');
+      } catch (error) {
+        alert(`导入失败：不是有效的备份文件。\n${error.message}`);
+      } finally { $('#fileInput').value = ''; }
+    }
+
+    // 事件绑定
+    $('#knownBtn').addEventListener('click', () => answer(true));
+    $('#unknownBtn').addEventListener('click', () => answer(false));
+    $('#skipBtn').addEventListener('click', () => {
+      if (!currentId || queue.length === 0) return showToast('没有其他待复习单词');
+      queue.push(currentId);
+      currentId = null;
+      pickNext();
+    });
+    // 三个模块只切换各自队列，不改变单词原始顺序和已有记忆等级。
+    $$('.mode-btn').forEach((button) => button.addEventListener('click', () => {
+      if (studyMode === button.dataset.mode) return;
+      studyMode = button.dataset.mode;
+      saveState();
+      buildQueue();
+    }));
+    $('#studyUnitSelect').addEventListener('change', () => {
+      selectedUnit = $('#studyUnitSelect').value;
+      state.dailyLearning.selectedUnit = selectedUnit;
+      saveState();
+      buildQueue();
+    });
+    $$('.nav-btn').forEach((button) => button.addEventListener('click', () => switchView(button.dataset.view)));
+    $$('[data-open-add]').forEach((button) => button.addEventListener('click', openModal));
+    $('#closeModal').addEventListener('click', closeModal);
+    $('#addModal').addEventListener('click', (event) => { if (event.target === $('#addModal')) closeModal(); });
+    $('#unitInput').addEventListener('change', () => {
+      const creating = $('#unitInput').value === '__new__';
+      $('#newUnitInput').classList.toggle('hidden', !creating);
+      if (creating) setTimeout(() => $('#newUnitInput').focus(), 50);
+    });
+    $('#addForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const english = $('#englishInput').value.trim();
+      const chinese = $('#chineseInput').value.trim();
+      const unit = $('#unitInput').value === '__new__' ? $('#newUnitInput').value.trim() : $('#unitInput').value;
+      if (!unit) return showToast('请输入单元名称');
+      if (state.words.some((word) => word.english.toLowerCase() === english.toLowerCase())) return showToast('这个单词已存在');
+      const word = { id: makeId(), english, chinese, unit, level: 0, lastReview: null, nextReview: today(), createdAt: today() };
+      state.words.push(word);
+      // 新词追加在所属单元末尾；当前正学习该单元时立即排到队列末尾。
+      if (studyMode === 'new' && unit === selectedUnit && state.dailyLearning.completedUnits[selectedUnit] !== today()) {
+        queue.push(word.id);
+        sessionInitial += 1;
+      }
+      saveState();
+      closeModal();
+      syncModeControls();
+      renderWordList();
+      if (!currentId && queue.length) pickNext(); else renderStudy();
+      showToast('单词已添加');
+    });
+    $('#searchInput').addEventListener('input', renderWordList);
+    $('#exportBtn').addEventListener('click', exportBackup);
+    $('#importBtn').addEventListener('click', () => $('#fileInput').click());
+    $('#fileInput').addEventListener('change', () => { const file = $('#fileInput').files[0]; if (file) importBackup(file); });
+    $('#clearBtn').addEventListener('click', () => {
+      if (!confirm('确定清空全部单词和学习进度吗？此操作无法撤销。')) return;
+      state = {
+        version: 1,
+        catalogVersion: CATALOG_VERSION,
+        words: [],
+        stats: {},
+        settings: { studyMode: 'new', selectedUnit: DEFAULT_UNIT },
+        dailyLearning: defaultDailyLearning(DEFAULT_UNIT)
+      };
+      studyMode = 'new';
+      selectedUnit = DEFAULT_UNIT;
+      saveState();
+      queue = [];
+      currentId = null;
+      sessionInitial = 0;
+      renderStudy();
+      renderWordList();
+      showToast('全部数据已清空');
+    });
+
+    // 初始化。页面自身不请求任何网络资源，保存到手机后可直接离线使用。
+    $('#todayLabel').textContent = new Intl.DateTimeFormat('zh-CN', { month: 'long', day: 'numeric', weekday: 'short' }).format(new Date());
+    saveState();
+    buildQueue();
+  </script>
+</body>
+</html>
